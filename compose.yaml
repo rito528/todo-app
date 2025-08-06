@@ -2,6 +2,7 @@ services:
   todo_mysql:
     image: mysql:8.4.6
     environment:
+      TZ: Asia/Tokyo
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: docker
       MYSQL_PASSWORD: docker
