@@ -11,4 +11,4 @@ services:
       - "53306:3306"
     volumes:
       - ./docker/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./docker/db-schema.sql:/docker-entrypoint-initdb.d/db-schema.sql
+      - ./docker/migrations:/docker-entrypoint-initdb.d
