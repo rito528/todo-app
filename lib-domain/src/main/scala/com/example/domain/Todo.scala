@@ -40,17 +40,17 @@ object TodoState {
 
 final case class Todo(
   id: Option[TodoId],
-  categoryId: CategoryId,
+  categoryId: Option[CategoryId],
   title: Title,
   body: Body,
   state: TodoState,
 )
 
 object Todo {
-  def apply(categoryId: CategoryId, title: Title, body: Body): Todo = {
+  def apply(title: Title, body: Body): Todo = {
     Todo(
       id = None,
-      categoryId = categoryId,
+      categoryId = None,
       title = title,
       body = body,
       state = TodoState.initial
