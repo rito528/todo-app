@@ -1,0 +1,14 @@
+services:
+  todo_mysql:
+    image: mysql:8.4.6
+    environment:
+      - TZ=Asia/Tokyo
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - MYSQL_DATABASE=to_do
+    ports:
+      - "53306:3306"
+    volumes:
+      - ./docker/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/migrations:/docker-entrypoint-initdb.d
