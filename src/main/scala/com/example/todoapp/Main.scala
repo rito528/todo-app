@@ -5,6 +5,7 @@ import com.comcast.ip4s._
 import org.http4s.ember.server._
 import org.http4s.client.middleware.Logger
 import org.http4s.client.Client
+import scala.concurrent.duration._
 
 object Main extends IOApp {
 
@@ -22,6 +23,7 @@ object Main extends IOApp {
       .withHost(ipv4"0.0.0.0")
       .withPort(port"9000")
       .withHttpApp(loggerClient.toHttpApp)
+      .withShutdownTimeout(1.second)
       .build
       .use(_ => IO.never)
       .as(ExitCode.Success)
