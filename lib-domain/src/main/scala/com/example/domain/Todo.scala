@@ -29,6 +29,8 @@ object Title {
 opaque type Body = String
 
 object Body {
+  def apply(value: String): Body = value
+
   extension (value: Body) {
     def unwrap: String = value
   }
