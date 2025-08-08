@@ -2,6 +2,7 @@ ThisBuild / scalaVersion := "3.3.6"
 ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.example"
 
+lazy val doobieVersion = "1.0.0-RC10"
 val Http4sVersion = "0.23.30"
 val CirceVersion = "0.14.10"
 val MunitVersion = "1.1.0"
@@ -13,7 +14,12 @@ lazy val `lib-util` = (project in file("./lib-util"))
 lazy val `lib-infrastructure-mysql` = (project in file("./lib-infrastructure-mysql"))
   .settings(
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.4.4"
+      "com.typesafe" % "config" % "1.4.4",
+      "com.mysql" % "mysql-connector-j" % "9.4.0",
+      "org.tpolecat" %% "doobie-core"     % doobieVersion,
+      "org.tpolecat" %% "doobie-specs2"   % doobieVersion,
+      "org.tpolecat" %% "doobie-hikari"   % doobieVersion,
+      "com.zaxxer" % "HikariCP" % "7.0.0"
     )
   )
 
