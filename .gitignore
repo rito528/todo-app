@@ -1,0 +1,30 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/todo-ngx/dist
+/todo-ngx/tmp
+/todo-ngx/out-tsc
+/todo-ngx/bazel-out
+
+# Node
+/todo-ngx/node_modules
+/todo-ngx/npm-debug.log
+/todo-ngx/yarn-error.log
+
+# Visual Studio Code
+.vscode/*
+
+# Miscellaneous
+/todo-ngx/.angular/cache
+/todo-ngx.sass-cache/
+/todo-ngx/connect.lock
+/todo-ngx/coverage
+/todo-ngx/libpeerconnection.log
+/todo-ngxtestem.log
+/todo-ngx/typings
+
+# System files
+.DS_Store
+Thumbs.db
+
+/public/ngx
