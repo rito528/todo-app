@@ -9,7 +9,9 @@ object CategoryId {
     value
   }
 
-  def intoInner(value: CategoryId): Int = value
+  extension (value: CategoryId) {
+    def unwrap: Int = value
+  }
 
 }
 
@@ -22,7 +24,9 @@ object CategoryName {
     value
   }
 
-  def intoInner(value: CategoryName): String = value
+  extension (value: CategoryName) {
+    def unwrap: String = value
+  }
 
 }
 
@@ -35,8 +39,10 @@ object CategorySlug {
     value
   }
 
-  def intoInner(value: CategorySlug): String = value
-
+  extension (value: CategorySlug) {
+    def unwrap: String = value
+  }
+  
 }
 
 opaque type CategoryColor = String
@@ -48,7 +54,9 @@ object CategoryColor {
     value
   }
 
-  def intoInner(value: CategoryColor): String = value
+  extension (value: CategoryColor) {
+    def unwrap: String = value
+  }
 
 }
 

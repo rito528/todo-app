@@ -8,7 +8,9 @@ object TodoId {
     value
   }
 
-  def intoInner(value: TodoId): Int = value
+  extension (value: TodoId) {
+    def unwrap: Int = value
+  }
 }
 
 opaque type Title = String
@@ -19,13 +21,17 @@ object Title {
     value
   }
 
-  def intoInner(value: Title): String = value
+  extension (value: Title) {
+    def unwrap: String = value
+  }
 }
 
 opaque type Body = String
 
 object Body {
-  def intoInner(value: Body): String = value
+  extension (value: Body) {
+    def unwrap: String = value
+  }
 }
 
 enum TodoState {
