@@ -1,30 +1,16 @@
 package com.example.todoapp
 
-import cats.effect.Sync
-import cats.syntax.all.*
+import org.http4s.dsl.io.*;
+import cats.effect.IO
 import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
+import org.http4s.Response
+import org.http4s.Request
 
-object TodoappRoutes:
-
-  def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] =
-    val dsl = new Http4sDsl[F]{}
-    import dsl.*
-    HttpRoutes.of[F] {
-      case GET -> Root / "joke" =>
-        for {
-          joke <- J.get
-          resp <- Ok(joke)
-        } yield resp
+object TodoappRoutes {
+  def routes: HttpRoutes[IO] = {
+    HttpRoutes.of[IO] {
+      case GET -> Root / "ping" =>
+        Ok("ok")
     }
-
-  def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] =
-    val dsl = new Http4sDsl[F]{}
-    import dsl.*
-    HttpRoutes.of[F] {
-      case GET -> Root / "hello" / name =>
-        for {
-          greeting <- H.hello(HelloWorld.Name(name))
-          resp <- Ok(greeting)
-        } yield resp
-    }
+  }
+}
