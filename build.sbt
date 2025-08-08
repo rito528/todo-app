@@ -12,6 +12,7 @@ val MunitCatsEffectVersion = "2.0.0"
 lazy val `lib-util` = (project in file("./lib-util"))
 
 lazy val `lib-infrastructure-mysql` = (project in file("./lib-infrastructure-mysql"))
+  .dependsOn(`lib-domain`)
   .settings(
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.4.4",

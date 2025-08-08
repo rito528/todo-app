@@ -9,16 +9,16 @@ trait TodoRepository[F[_]] {
 
   /**
     * @param todo 作成したい [[Todo]]
-    * @return 作成した [[Todo]]([[TodoId]] を含む)を返す作用
+    * @return [[Todo]] を作成する作用
     */
-  def createTodo(todo: Todo): F[Todo]
+  def createTodo(todo: Todo): F[Unit]
 
   /**
     * @param todoId 更新したい [[Todo]] の [[TodoId]]
     * @param todo 更新したい [[Todo]]
     * @return `todoId` を `todo` に更新する作用
     */
-  def updateTodo(todoId: TodoId, todo: Todo): F[Todo]
+  def updateTodo(todoId: TodoId, todo: Todo): F[Unit]
 
   /**
     * @param todoId 削除したい [[Todo]] の [[TodoId]]
