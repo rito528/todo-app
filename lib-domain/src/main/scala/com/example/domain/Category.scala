@@ -66,3 +66,11 @@ final case class Category(
   slug: CategorySlug,
   color: CategoryColor
 )
+
+object Category {
+
+  def apply(name: CategoryName, slug: CategorySlug, color: CategoryColor): Category = {
+    Category(None, name, slug, color)
+  }
+
+}
