@@ -33,9 +33,9 @@ object DatabaseConnectionPool {
     val config = ConfigFactory.load()
 
     DatabaseConnectionPool(
-      config.getString("url"),
-      config.getString("user"),
-      config.getString("password")
+      config.getString("db.url"),
+      config.getString("db.user"),
+      config.getString("db.password")
     )
   }
 }
