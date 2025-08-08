@@ -19,10 +19,12 @@
 /todo-ngx/typings
 
 # System files
-.DS_Store
 Thumbs.db
 
 /public/ngx
+
+# macOS
+.DS_Store
 
 # sbt specific
 dist/*
