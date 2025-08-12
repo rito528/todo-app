@@ -2,12 +2,12 @@ ThisBuild / scalaVersion := "3.3.6"
 ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.example"
 
-lazy val DoobieVersion = "1.0.0-RC10"
-lazy val Http4sVersion = "0.23.30"
-lazy val CirceVersion = "0.14.14"
-lazy val MunitVersion = "1.1.0"
-lazy val LogbackVersion = "1.5.16"
-lazy val MunitCatsEffectVersion = "2.0.0"
+val DoobieVersion = "1.0.0-RC10"
+val Http4sVersion = "0.23.30"
+val CirceVersion = "0.14.14"
+val MunitVersion = "1.1.0"
+val LogbackVersion = "1.5.16"
+val MunitCatsEffectVersion = "2.0.0"
 
 lazy val `lib-util` = (project in file("./lib-util"))
 
