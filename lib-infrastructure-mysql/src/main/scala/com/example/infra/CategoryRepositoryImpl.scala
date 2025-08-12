@@ -14,7 +14,7 @@ class CategoryRepositoryImpl[F[_]: Async](
   using pool: DatabaseConnectionPool
 ) extends CategoryRepository[F] {
 
-  override def fetchAllCaqtegory: F[Vector[Category]] = pool.transactor.use { xa => 
+  override def fetchAllCategory: F[Vector[Category]] = pool.transactor.use { xa =>
     given categoryRead: Read[Category] = Read[(Int, String, String, String)]
       .map { case (id, name, slug, color) =>
 

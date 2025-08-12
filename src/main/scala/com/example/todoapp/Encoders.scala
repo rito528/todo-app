@@ -2,21 +2,29 @@ package com.example.todoapp
 
 import io.circe.generic.auto.*
 import io.circe.Encoder
-import com.example.domain.Todo
 import com.example.domain.TodoId
 import com.example.domain.CategoryId
 import com.example.domain.Title
 import com.example.domain.Body
 import com.example.domain.TodoState
+import com.example.domain.CategoryName
+import com.example.domain.CategorySlug
+import com.example.domain.CategoryColor
+import com.example.todoapp.Responses.TodoResponse
 
 object Encoders {
   // NOTE: Opaque type の Encoder は明示的に実装する必要がある
   // ref: https://github.com/circe/circe/issues/1829
 
   given encodeTodoId: Encoder[TodoId] = Encoder[Int].contramap(_.unwrap)
-  given encodeCategoryId: Encoder[CategoryId] = Encoder[Int].contramap(_.unwrap)
   given encodeTitle: Encoder[Title] = Encoder[String].contramap(_.unwrap)
   given encodeBody: Encoder[Body] = Encoder[String].contramap(_.unwrap)
   given encodeState: Encoder[TodoState] = Encoder[String].contramap(_.toString)
-  given encodeTodos: Encoder[Vector[Todo]] = Encoder.encodeVector[Todo]
+
+  given encodeCategoryId: Encoder[CategoryId] = Encoder[Int].contramap(_.unwrap)
+  given categoryName: Encoder[CategoryName] = Encoder[String].contramap(_.unwrap)
+  given categorySlug: Encoder[CategorySlug] = Encoder[String].contramap(_.unwrap)
+  given categoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
+
+  given encodeTodoResponses: Encoder[Vector[TodoResponse]] = Encoder.encodeVector[TodoResponse]
 }

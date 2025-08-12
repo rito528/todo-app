@@ -5,6 +5,6 @@ trait CategoryRepository[F[_]] {
   /**
     * @return 全ての [[Category]] を返す作用
     */
-  def fetchAllCaqtegory: F[Vector[Category]]
+  def fetchAllCategory: F[Vector[Category]]
 
 }

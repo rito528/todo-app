@@ -10,15 +10,32 @@ import fs2.io.file.Path
 import com.example.domain.TodoRepository
 import io.circe.syntax.*
 import org.http4s.circe.*
-import com.example.todoapp.Encoders.encodeTodos
+import com.example.todoapp.Encoders.encodeTodoResponses
+import com.example.domain.CategoryRepository
+import com.example.todoapp.Responses.TodoResponse
 
 object TodoappRoutes {
-  def routes(using todoRepository: TodoRepository[IO]): HttpRoutes[IO] = {
+  def routes(
+    using todoRepository: TodoRepository[IO],
+    categoryRepository: CategoryRepository[IO]
+  ): HttpRoutes[IO] = {
     HttpRoutes.of[IO] {
       case GET -> Root / "ping"          =>
         Ok("ok")
       case GET -> Root / "api" / "todos" =>
-        Ok(todoRepository.fetchAllTodo.map(_.asJson))
+        val response = for {
+          todos <- todoRepository.fetchAllTodo
+          categories <- categoryRepository.fetchAllCategory
+        } yield {
+          println(todos)
+          println(categories)
+
+          todos.map(todo => 
+            TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
+          ).asJson
+        }
+
+        Ok(response)
       case req @ GET -> "assets" /: rest =>
         StaticFile
           .fromPath(Path(s"public/${rest}"), Some(req))
