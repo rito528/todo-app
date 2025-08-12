@@ -43,7 +43,7 @@ opaque type CategoryColor = String
 
 object CategoryColor {
   def apply(value: String): CategoryColor = {
-    require(value.startsWith("#") && value.length == 8)
+    require(value.startsWith("#") && value.length == 7)
     value
   }
 
