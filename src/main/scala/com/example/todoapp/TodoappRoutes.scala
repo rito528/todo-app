@@ -27,9 +27,6 @@ object TodoappRoutes {
           todos <- todoRepository.fetchAllTodo
           categories <- categoryRepository.fetchAllCategory
         } yield {
-          println(todos)
-          println(categories)
-
           todos.map(todo => 
             TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
           ).asJson
