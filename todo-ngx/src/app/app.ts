@@ -24,6 +24,6 @@ export class App {
     })
   }
 
-  displayedColumns: string[] = ["title", "body", "state"]
+  displayedColumns: string[] = ["title", "body", "state", "category"]
 
 }
