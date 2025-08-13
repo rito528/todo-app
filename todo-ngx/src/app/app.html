@@ -35,8 +35,9 @@
 
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>カテゴリ</th>
-        <td mat-cell *matCellDef="let element" [style.background-color]="element.category.color">
-          {{ element.category.name }}
+        <td mat-cell *matCellDef="let element"
+          [style.background-color]="element.category?.color ? element.category.color : 'white'">
+          {{ element.category?.name ? element.category.name : '未指定' }}
         </td>
       </ng-container>
 
