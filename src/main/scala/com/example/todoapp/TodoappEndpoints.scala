@@ -32,11 +32,11 @@ class TodoappEndpoints(
     _ => IO.pure(Right("ok"))
   }
 
-  private def todoEndpoint: PublicEndpoint[Unit, Unit, List[TodoResponse], Any] = {
+  private def getTodoEndpoint: PublicEndpoint[Unit, Unit, List[TodoResponse], Any] = {
     endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
   }
 
-  private def todoLogic(
+  private def getTodoLogic(
     using
     todoRepository:     TodoRepository[IO],
     categoryRepository: CategoryRepository[IO]
@@ -62,7 +62,7 @@ class TodoappEndpoints(
 
   private val apiEndpoints: List[ServerEndpoint[Any, IO]] = List(
     pingEndpoint.serverLogic(pingLogic),
-    todoEndpoint.serverLogic(todoLogic),
+    getTodoEndpoint.serverLogic(getTodoLogic),
     staticFilesGetServerEndpoint("assets")("public/"),
     angularAppEndpoint.serverLogic(angularAppLogic),
   )
