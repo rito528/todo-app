@@ -31,12 +31,21 @@
     <form class="create-todo-form" [formGroup]="createTodoForm" (ngSubmit)="onSubmitCreateTodo()">
       <mat-form-field>
         <mat-label>タイトル</mat-label>
-        <input matInput formControlName="title">
+        <input matInput formControlName="title" required>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>本文</mat-label>
-        <input matInput formControlName="body">
+        <input matInput formControlName="body" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>カテゴリ</mat-label>
+        <mat-select formControlName="category">
+          @for (category of categories; track category.name) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
 
       <button matButton="filled" type="submit">作成</button>
