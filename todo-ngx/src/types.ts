@@ -19,4 +19,6 @@ const todoSchema = z.object({
 
 export type TodoState = z.infer<typeof todoStateSchema>
 
+export type Category = z.infer<typeof categorySchema>
+
 export type Todo = z.infer<typeof todoSchema>
