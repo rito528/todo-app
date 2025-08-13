@@ -13,6 +13,8 @@ import sttp.tapir.server.ServerEndpoint
 import com.example.todoapp.Requests.CreateTodoRequestSchema
 import com.example.domain.Todo
 import com.example.domain.Category
+import com.example.todoapp.Requests.PutTodoRequestSchema
+import com.example.domain.TodoId
 
 class ApiEndpoints(
   using
@@ -46,6 +48,23 @@ class ApiEndpoints(
         Right(categories.toList)
       }
     }
+
+    def putTodoLogic: ((Int, PutTodoRequestSchema)) => IO[Either[Unit, TodoResponse]] = (todoIdWithRequestSchema: (Int, PutTodoRequestSchema)) => {
+      val todoId      = TodoId(todoIdWithRequestSchema._1)
+      val updatedTodo = todoIdWithRequestSchema._2.toTodo(todoId)
+
+      for {
+        _          <- todoRepository.updateTodo(
+          todoId,
+          updatedTodo
+        )
+        categories <- categoryRepository.fetchAllCategory
+      } yield {
+        Right(
+          TodoResponse.fromTodoWithCategoryOpt(updatedTodo, categories.find(_.id == updatedTodo.categoryId))
+        )
+      }
+    }
   }
 
   private def createTodoEndpoint: PublicEndpoint[CreateTodoRequestSchema, Unit, TodoResponse, Any] = {
@@ -56,6 +75,10 @@ class ApiEndpoints(
     endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
   }
 
+  private def putTodoEndpoint: PublicEndpoint[(Int, PutTodoRequestSchema), Unit, TodoResponse, Any] = {
+    endpoint.put.in("api" / "todos" / path[Int]).in(jsonBody[PutTodoRequestSchema]).out(jsonBody[TodoResponse])
+  }
+
   private def getAllCategoriesEndpoint: PublicEndpoint[Unit, Unit, List[Category], Any] = {
     endpoint.get.in("api" / "categories").out(jsonBody[List[Category]])
   }
@@ -63,6 +86,7 @@ class ApiEndpoints(
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
     getTodoEndpoint.serverLogic(ApiEndpointServerLogics.getTodoLogic),
     createTodoEndpoint.serverLogic(ApiEndpointServerLogics.createTodoLogic),
-    getAllCategoriesEndpoint.serverLogic(ApiEndpointServerLogics.getAllCategoriesLogic)
+    getAllCategoriesEndpoint.serverLogic(ApiEndpointServerLogics.getAllCategoriesLogic),
+    putTodoEndpoint.serverLogic(ApiEndpointServerLogics.putTodoLogic),
   )
 }
