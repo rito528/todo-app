@@ -12,6 +12,7 @@ import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.Todo
+import com.example.domain.Category
 
 object Decoders {
   given decodeTodoId: Decoder[TodoId]   = Decoder[Int].map(TodoId.apply)
@@ -32,4 +33,5 @@ object Decoders {
   given decodeCategoryColor: Decoder[CategoryColor] = Decoder[String].map(CategoryColor.apply)
 
   given decodeTodoResponses: Decoder[List[TodoResponse]] = Decoder.decodeList[TodoResponse]
+  given decodeCategories: Decoder[List[Category]]        = Decoder.decodeList[Category]
 }
