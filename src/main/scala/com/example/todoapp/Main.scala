@@ -19,7 +19,9 @@ object Main extends IOApp {
     given todoRepository: TodoRepository[IO]             = new TodoRepositoryImpl[IO]
     given cateogryRepository: CategoryRepository[IO]     = new CategoryRepositoryImpl[IO]
 
-    val routes = Http4sServerInterpreter[IO]().toRoutes(TodoappEndpoints.endpoints)
+    val todoAppEndpoints = new TodoappEndpoints()
+
+    val routes = Http4sServerInterpreter[IO]().toRoutes(todoAppEndpoints.allEndpoints)
 
     EmberServerBuilder
       .default[IO]

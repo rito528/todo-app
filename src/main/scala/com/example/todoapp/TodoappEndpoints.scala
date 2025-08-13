@@ -15,8 +15,14 @@ import com.example.domain.CategoryRepository
 import sttp.tapir.files.*
 import scala.io.Source
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import sttp.tapir.swagger.SwaggerUIOptions
 
-object TodoappEndpoints {
+class TodoappEndpoints(
+  using
+  todoRepository:     TodoRepository[IO],
+  categoryRepository: CategoryRepository[IO]
+) {
 
   private def pingEndpoint: PublicEndpoint[Unit, Unit, String, Any] = {
     endpoint.get.in("ping").out(stringBody)
@@ -54,16 +60,18 @@ object TodoappEndpoints {
       Right(html)
     }
 
-  def endpoints(
-    using
-    todoRepository:     TodoRepository[IO],
-    categoryRepository: CategoryRepository[IO]
-  ): List[ServerEndpoint[Any, IO]] = {
-    List(
-      pingEndpoint.serverLogic(pingLogic),
-      todoEndpoint.serverLogic(todoLogic),
-      staticFilesGetServerEndpoint("assets")("public/"),
-      angularAppEndpoint.serverLogic(angularAppLogic),
+  private val apiEndpoints: List[ServerEndpoint[Any, IO]] = List(
+    pingEndpoint.serverLogic(pingLogic),
+    todoEndpoint.serverLogic(todoLogic),
+    staticFilesGetServerEndpoint("assets")("public/"),
+    angularAppEndpoint.serverLogic(angularAppLogic),
+  )
+
+  private val apiDocumentEndpoint: List[ServerEndpoint[Any, IO]] =
+    SwaggerInterpreter(
+      swaggerUIOptions = SwaggerUIOptions.default.pathPrefix(List("document", "openapi", "docs"))
     )
-  }
+      .fromServerEndpoints[IO](apiEndpoints, "TodoApp OpenAPI Docs", "1.0.0")
+
+  val allEndpoints: List[ServerEndpoint[Any, IO]] = apiDocumentEndpoint ++ apiEndpoints
 }
