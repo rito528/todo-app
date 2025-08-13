@@ -22,9 +22,9 @@ object Encoders {
   given encodeState: Encoder[TodoState] = Encoder[String].contramap(_.toString)
 
   given encodeCategoryId: Encoder[CategoryId] = Encoder[Int].contramap(_.unwrap)
-  given categoryName: Encoder[CategoryName] = Encoder[String].contramap(_.unwrap)
-  given categorySlug: Encoder[CategorySlug] = Encoder[String].contramap(_.unwrap)
-  given categoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
+  given encodeCategoryName: Encoder[CategoryName] = Encoder[String].contramap(_.unwrap)
+  given encodeCategorySlug: Encoder[CategorySlug] = Encoder[String].contramap(_.unwrap)
+  given encodeCategoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
 
   given encodeTodoResponses: Encoder[Vector[TodoResponse]] = Encoder.encodeVector[TodoResponse]
 }
