@@ -1,46 +1,73 @@
 package com.example.todoapp
 
-import org.http4s.dsl.io.*;
 import cats.effect.IO
+import cats.syntax.all.*
 import org.http4s.HttpRoutes
-import org.http4s.Response
-import org.http4s.Request
-import org.http4s.StaticFile
-import fs2.io.file.Path
 import com.example.domain.TodoRepository
-import io.circe.syntax.*
-import org.http4s.circe.*
 import com.example.todoapp.Encoders.encodeTodoResponses
-import com.example.domain.CategoryRepository
+import com.example.todoapp.Decoders.decodeTodoResponses
+import com.example.todoapp.Schemas.*
+import sttp.tapir.generic.auto.*
+import sttp.tapir.*
+import sttp.tapir.server.http4s.Http4sServerInterpreter
+import sttp.tapir.json.circe.*
 import com.example.todoapp.Responses.TodoResponse
+import com.example.domain.TodoId
+import com.example.domain.CategoryRepository
+import sttp.tapir.files.*
+import scala.io.Source
+import sttp.tapir.server.ServerEndpoint
 
 object TodoappRoutes {
+
+  private def pingEndpoint: PublicEndpoint[Unit, Unit, String, Any] = {
+    endpoint.get.in("ping").out(stringBody)
+  }
+
+  private def pingLogic: Unit => IO[Either[Unit, String]] = {
+    _ => IO.pure(Right("ok"))
+  }
+
+  private def todoEndpoint: PublicEndpoint[Unit, Unit, List[TodoResponse], Any] = {
+    endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
+  }
+
+  private def todoLogic(
+    using
+    todoRepository:     TodoRepository[IO],
+    categoryRepository: CategoryRepository[IO]
+  ): Unit => IO[Either[Unit, List[TodoResponse]]] = _ =>
+    for {
+      todos      <- todoRepository.fetchAllTodo
+      categories <- categoryRepository.fetchAllCategory
+    } yield {
+      Right(todos.map(todo =>
+        TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
+      ).toList)
+    }
+
+  private def angularAppEndpoint: PublicEndpoint[List[String], Unit, String, Any] = {
+    endpoint.get.in(paths).out(htmlBodyUtf8)
+  }
+
+  private def angularAppLogic: List[String] => IO[Either[Unit, String]] = _ =>
+    IO {
+      val html = Source.fromFile("public/ngx/browser/index.html").mkString
+      Right(html)
+    }
+
   def routes(
-    using todoRepository: TodoRepository[IO],
+    using
+    todoRepository:     TodoRepository[IO],
     categoryRepository: CategoryRepository[IO]
   ): HttpRoutes[IO] = {
-    HttpRoutes.of[IO] {
-      case GET -> Root / "ping"          =>
-        Ok("ok")
-      case GET -> Root / "api" / "todos" =>
-        val response = for {
-          todos <- todoRepository.fetchAllTodo
-          categories <- categoryRepository.fetchAllCategory
-        } yield {
-          todos.map(todo => 
-            TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
-          ).asJson
-        }
+    val routes: List[ServerEndpoint[Any, IO]] = List(
+      pingEndpoint.serverLogic(pingLogic),
+      todoEndpoint.serverLogic(todoLogic),
+      staticFilesGetServerEndpoint("assets")("public/"),
+      angularAppEndpoint.serverLogic(angularAppLogic),
+    )
 
-        Ok(response)
-      case req @ GET -> "assets" /: rest =>
-        StaticFile
-          .fromPath(Path(s"public/${rest}"), Some(req))
-          .getOrElseF(NotFound())
-      case req @ GET -> _                =>
-        StaticFile
-          .fromPath(Path("public/ngx/browser/index.html"), Some(req))
-          .getOrElseF(NotFound())
-    }
+    Http4sServerInterpreter[IO]().toRoutes(routes)
   }
 }
