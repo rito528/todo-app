@@ -2,14 +2,12 @@ package com.example.todoapp
 
 import cats.effect.IO
 import cats.syntax.all.*
-import org.http4s.HttpRoutes
 import com.example.domain.TodoRepository
 import com.example.todoapp.Encoders.encodeTodoResponses
 import com.example.todoapp.Decoders.decodeTodoResponses
 import com.example.todoapp.Schemas.*
 import sttp.tapir.generic.auto.*
 import sttp.tapir.*
-import sttp.tapir.server.http4s.Http4sServerInterpreter
 import sttp.tapir.json.circe.*
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.TodoId
@@ -18,7 +16,7 @@ import sttp.tapir.files.*
 import scala.io.Source
 import sttp.tapir.server.ServerEndpoint
 
-object TodoappRoutes {
+object TodoappEndpoints {
 
   private def pingEndpoint: PublicEndpoint[Unit, Unit, String, Any] = {
     endpoint.get.in("ping").out(stringBody)
@@ -56,18 +54,16 @@ object TodoappRoutes {
       Right(html)
     }
 
-  def routes(
+  def endpoints(
     using
     todoRepository:     TodoRepository[IO],
     categoryRepository: CategoryRepository[IO]
-  ): HttpRoutes[IO] = {
-    val routes: List[ServerEndpoint[Any, IO]] = List(
+  ): List[ServerEndpoint[Any, IO]] = {
+    List(
       pingEndpoint.serverLogic(pingLogic),
       todoEndpoint.serverLogic(todoLogic),
       staticFilesGetServerEndpoint("assets")("public/"),
       angularAppEndpoint.serverLogic(angularAppLogic),
     )
-
-    Http4sServerInterpreter[IO]().toRoutes(routes)
   }
 }
