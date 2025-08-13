@@ -11,6 +11,7 @@ import com.example.domain.CategoryName
 import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
+import com.example.domain.Todo
 
 object Decoders {
   given decodeTodoId: Decoder[TodoId]   = Decoder[Int].map(TodoId.apply)
@@ -23,6 +24,7 @@ object Decoders {
       case _             => TodoState.Todo
     }
   }
+  given decodeTodo: Decoder[Todo]       = Decoder.derived
 
   given decodeCategoryId: Decoder[CategoryId]       = Decoder[Int].map(CategoryId.apply)
   given decodeCategoryName: Decoder[CategoryName]   = Decoder[String].map(CategoryName.apply)

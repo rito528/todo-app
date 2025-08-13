@@ -4,13 +4,15 @@ import sttp.tapir.generic.auto.*
 import sttp.tapir.*
 import sttp.tapir.json.circe.*
 import com.example.todoapp.Responses.TodoResponse
-import com.example.todoapp.Encoders.encodeTodoResponses
-import com.example.todoapp.Decoders.decodeTodoResponses
+import com.example.todoapp.Encoders.{ encodeTodo, encodeTodoResponses }
+import com.example.todoapp.Decoders.{ decodeTodo, decodeTodoResponses }
 import com.example.todoapp.Schemas.*
 import com.example.domain.TodoRepository
 import com.example.domain.CategoryRepository
 import cats.effect.IO
 import sttp.tapir.server.ServerEndpoint
+import com.example.todoapp.Requests.CreateTodoRequestSchema
+import com.example.domain.Todo
 
 class ApiEndpoints(
   using
@@ -27,6 +29,17 @@ class ApiEndpoints(
           TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
         ).toList)
       }
+
+    def createTodoLogic(schema: CreateTodoRequestSchema): IO[Either[Unit, Todo]] = {
+      val todo = schema.toTodo
+      todoRepository.createTodo(schema.toTodo).map { todoId =>
+        Right(todo.copy(id = Some(todoId)))
+      }
+    }
+  }
+
+  private def createTodoEndpoint: PublicEndpoint[CreateTodoRequestSchema, Unit, Todo, Any] = {
+    endpoint.post.in("api" / "todos").in(jsonBody[CreateTodoRequestSchema]).out(jsonBody[Todo])
   }
 
   private def getTodoEndpoint: PublicEndpoint[Unit, Unit, List[TodoResponse], Any] = {
@@ -35,5 +48,6 @@ class ApiEndpoints(
 
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
     getTodoEndpoint.serverLogic(ApiEndpointServerLogics.getTodoLogic),
+    createTodoEndpoint.serverLogic(ApiEndpointServerLogics.createTodoLogic)
   )
 }
