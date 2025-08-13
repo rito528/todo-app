@@ -36,11 +36,7 @@ class TodoappEndpoints(
     endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
   }
 
-  private def getTodoLogic(
-    using
-    todoRepository:     TodoRepository[IO],
-    categoryRepository: CategoryRepository[IO]
-  ): Unit => IO[Either[Unit, List[TodoResponse]]] = _ =>
+  private def getTodoLogic: Unit => IO[Either[Unit, List[TodoResponse]]] = _ =>
     for {
       todos      <- todoRepository.fetchAllTodo
       categories <- categoryRepository.fetchAllCategory
