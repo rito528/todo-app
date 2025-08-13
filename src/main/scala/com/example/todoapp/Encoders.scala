@@ -12,6 +12,7 @@ import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.Todo
+import com.example.domain.Category
 
 object Encoders {
   // NOTE: Opaque type の Encoder は明示的に実装する必要がある
@@ -29,4 +30,5 @@ object Encoders {
   given encodeCategoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
 
   given encodeTodoResponses: Encoder[List[TodoResponse]] = Encoder.encodeList[TodoResponse]
+  given encodeCategories: Encoder[List[Category]]        = Encoder.encodeList[Category]
 }
