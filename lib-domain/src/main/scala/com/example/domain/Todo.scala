@@ -15,7 +15,7 @@ object TodoId {
 
 opaque type Title = String
 
-object Title {
+object Title  {
   def apply(value: String): Title = {
     require(value.length <= 255)
     value
@@ -28,7 +28,7 @@ object Title {
 
 opaque type Body = String
 
-object Body {
+object Body   {
   def apply(value: String): Body = value
 
   extension (value: Body) {
@@ -47,21 +47,21 @@ object TodoState {
 }
 
 final case class Todo(
-  id: Option[TodoId],
+  id:         Option[TodoId],
   categoryId: Option[CategoryId],
-  title: Title,
-  body: Body,
-  state: TodoState,
+  title:      Title,
+  body:       Body,
+  state:      TodoState,
 )
 
 object Todo {
-  def apply(title: Title, body: Body): Todo = {
+  def apply(categoryId: Option[CategoryId], title: Title, body: Body): Todo = {
     Todo(
-      id = None,
-      categoryId = None,
-      title = title,
-      body = body,
-      state = TodoState.initial
+      id         = None,
+      categoryId = categoryId,
+      title      = title,
+      body       = body,
+      state      = TodoState.initial
     )
   }
 }
