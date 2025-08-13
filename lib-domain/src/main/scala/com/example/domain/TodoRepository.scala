@@ -9,9 +9,9 @@ trait TodoRepository[F[_]] {
 
   /**
     * @param todo 作成したい [[Todo]]
-    * @return [[Todo]] を作成する作用
+    * @return [[Todo]] を作成し、作成した [[Todo]] の [[TodoId]] を返す作用
     */
-  def createTodo(todo: Todo): F[Unit]
+  def createTodo(todo: Todo): F[TodoId]
 
   /**
     * @param todoId 更新したい [[Todo]] の [[TodoId]]

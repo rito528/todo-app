@@ -49,15 +49,17 @@ class TodoRepositoryImpl[F[_]: Async](
     }
   }
 
-  override def createTodo(todo: Todo): F[Unit] = pool.transactor.use { xa =>
-    sql"""
-      | INSERT INTO to_do (category_id, title, body, state) 
-      | VALUES (${todo.categoryId.map(_.unwrap)}, ${todo.title.unwrap}, ${todo.body.unwrap}, ${todoStateToInt(todo.state)})"""
-      .stripMargin
-      .update
-      .run
+  override def createTodo(todo: Todo): F[TodoId] = pool.transactor.use { xa =>
+    (for {
+       _ <- sql"""
+        | INSERT INTO to_do (category_id, title, body, state) 
+        | VALUES (${todo.categoryId.map(_.unwrap)}, ${todo.title.unwrap}, ${todo.body.unwrap}, ${todoStateToInt(todo.state)})"""
+        .stripMargin
+        .update
+        .run
+        id <- sql"SELECT LAST_INSERT_ID()".query[Int].unique
+    } yield TodoId(id))
       .transact(xa)
-      .void
   }
 
   override def updateTodo(todoId: TodoId, todo: Todo): F[Unit] = pool.transactor.use { xa => 
