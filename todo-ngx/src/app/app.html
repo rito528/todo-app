@@ -83,7 +83,7 @@
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="openUpdateTodoDialog(element)">更新</button>
-            <button mat-menu-item>削除</button>
+            <button mat-menu-item (click)="onDeleteTodo(element.id)">削除</button>
           </mat-menu>
         </td>
       </ng-container>
