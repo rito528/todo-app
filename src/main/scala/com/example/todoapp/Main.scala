@@ -6,10 +6,19 @@ import org.http4s.ember.server._
 import org.http4s.client.middleware.Logger
 import org.http4s.client.Client
 import scala.concurrent.duration._
+import com.example.infra.TodoRepositoryImpl
+import com.example.domain.TodoRepository
+import com.example.infra.DatabaseConnectionPool
+import com.example.domain.CategoryRepository
+import com.example.infra.CategoryRepositoryImpl
 
 object Main extends IOApp {
 
   def run(args: List[String]): IO[ExitCode] = {
+    given databaseConnectionPool: DatabaseConnectionPool = DatabaseConnectionPool.fromConfig()
+    given todoRepository: TodoRepository[IO] = new TodoRepositoryImpl[IO]
+    given cateogryRepository: CategoryRepository[IO] = new CategoryRepositoryImpl[IO]
+
     val client = Client.fromHttpApp(TodoappRoutes.routes.orNotFound)
 
     val loggerClient = Logger[IO](
