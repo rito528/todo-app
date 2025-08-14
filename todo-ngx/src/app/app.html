@@ -41,7 +41,8 @@
 
       <mat-form-field>
         <mat-label>カテゴリ</mat-label>
-        <mat-select formControlName="category">
+        <mat-select formControlName="category" canSelectNullableOptions>
+          <mat-option [value]="null">未分類</mat-option>
           @for (category of categories; track category.name) {
           <mat-option [value]="category.id">{{ category.name }}</mat-option>
           }
