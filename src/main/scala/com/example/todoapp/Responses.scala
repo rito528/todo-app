@@ -21,10 +21,7 @@ object Responses {
     def fromTodoWithCategoryOpt(todo: Todo, category: Option[Category]): TodoResponse = {
       // NOTE: TodoId が None になるのは ID の採番がされていない時のみである。
       //       レスポンスとして Todo を返したい時は ID が採番済であることを保証すべき。
-      require(todo.id.isDefined)
-
-      val isSameCategory = (todo.categoryId.isEmpty && category.isEmpty) || (category.isDefined && todo.categoryId.get == category.get.id.get)
-      require(isSameCategory)
+      require(todo.id.isDefined && todo.categoryId == category.flatMap(_.id))
 
       TodoResponse(
         todo.id.get,
