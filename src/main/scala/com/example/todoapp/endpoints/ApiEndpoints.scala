@@ -17,7 +17,7 @@ class ApiEndpoints(
   todoRepository:     TodoRepository[IO],
   categoryRepository: CategoryRepository[IO]
 ) {
-  private class ApiEndpointServerLogics {
+  private object ApiEndpointServerLogics {
     def getTodoLogic: Unit => IO[Either[Unit, List[TodoResponse]]] = _ =>
       for {
         todos      <- todoRepository.fetchAllTodo
@@ -33,9 +33,7 @@ class ApiEndpoints(
     endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
   }
 
-  private val apiEndpointServerLogics = new ApiEndpointServerLogics
-
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
-    getTodoEndpoint.serverLogic(apiEndpointServerLogics.getTodoLogic),
+    getTodoEndpoint.serverLogic(ApiEndpointServerLogics.getTodoLogic),
   )
 }
