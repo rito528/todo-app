@@ -113,6 +113,13 @@ export class App {
       }
     })
   }
+
+  onDeleteTodo(todoId: number) {
+    this.http.delete(`/api/todos/${todoId}`).subscribe({
+      next: () => this.todos = this.todos.filter((todo) => todo.id !== todoId),
+      error: (err) => console.error(err)
+    })
+  }
 }
 
 @Component({
