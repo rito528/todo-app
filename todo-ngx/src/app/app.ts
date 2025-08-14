@@ -100,14 +100,13 @@ export class App {
 
       if (safeParsedForm.success) {
         this.http.put<Todo>(`/api/todos/${currentTodo.id}`, {
-          title: safeParsedForm.data.todo.title,
-          body: safeParsedForm.data.todo.body,
-          categoryId: safeParsedForm.data.todo.categoryId,
-          state: safeParsedForm.data.todo.state
+          ...safeParsedForm.data.todo
         }).subscribe({
-          next: (todo) =>
-            this.todos = this.todos.with(this.todos.indexOf(currentTodo), todo)
-          ,
+          next: (todo) => this.todos = this.todos
+            .with(
+              this.todos.indexOf(currentTodo),
+              todo
+            ),
           error: (err) => console.error(err)
         })
       }
