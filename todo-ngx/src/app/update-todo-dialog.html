@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Todo の更新</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>タイトル</mat-label>
+    <input matInput [(ngModel)]="data.todo.title" required>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>本文</mat-label>
+    <textarea matInput [(ngModel)]="data.todo.body" required></textarea>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>ステータス</mat-label>
+    <mat-select [(ngModel)]="data.todo.state">
+      <mat-option value="Todo">TODO(着手前)</mat-option>
+      <mat-option value="Progressing">進行中</mat-option>
+      <mat-option value="Done">完了</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>カテゴリ</mat-label>
+    <mat-select [(ngModel)]="data.todo.categoryId" canSelectNullableOptions>
+      <mat-option [value]="null">未分類</mat-option>
+      @for (category of data.categories; track category.name) {
+      <mat-option [value]="category.id">{{ category.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="onNoClick()">キャンセル</button>
+  <button matButton [mat-dialog-close]="todo()" cdkDocusInitial>更新</button>
+</mat-dialog-actions>

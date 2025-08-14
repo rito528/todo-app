@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
-const todoStateSchema = z.enum(["Todo", "Progressing", "Done"])
+export const todoStateSchema = z.enum(["Todo", "Progressing", "Done"])
 
-const categorySchema = z.object({
+export const categorySchema = z.object({
   id: z.uint32(),
   name: z.string(),
   slug: z.string(),
   color: z.string(),
 })
 
-const todoSchema = z.object({
+export const todoSchema = z.object({
   id: z.uint32().nullable(),
   category: categorySchema.nullable(),
   title: z.string().max(255),

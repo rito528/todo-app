@@ -1,14 +1,30 @@
-import { Component, inject, Injectable, signal } from '@angular/core';
+import { Component, inject, Injectable, model, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
-import { Category, Todo } from '../types';
+import { Category, categorySchema, Todo, todoSchema, TodoState, todoStateSchema } from '../types';
 import { TodoStatePipe } from './pipes/todo-state-pipe';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { z } from 'zod';
+
+const todoUpdateFormSchema = z.object({
+  categories: categorySchema.array(),
+  todo: z.object({
+    categoryId: z.uint32().nullable(),
+    title: z.string().max(255),
+    body: z.string(),
+    state: todoStateSchema
+  })
+})
+
+type TodoUpdateForm = z.infer<typeof todoUpdateFormSchema>
 
 @Component({
   selector: 'app-root',
@@ -20,7 +36,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './app.html',
   styleUrl: './app.sass'
@@ -31,6 +49,7 @@ export class App {
   categories: Category[] = []
 
   private http = inject(HttpClient)
+  readonly dialog = inject(MatDialog)
 
   constructor() {
     this.http.get<Todo[]>('/api/todos').subscribe({
@@ -44,7 +63,7 @@ export class App {
     })
   }
 
-  displayedColumns: string[] = ["title", "body", "state", "category"]
+  displayedColumns: string[] = ["title", "body", "state", "category", "operation"]
 
   createTodoForm = new FormGroup({
     title: new FormControl(''),
@@ -61,5 +80,61 @@ export class App {
       next: (todo) => this.todos = [...this.todos, todo],
       error: (err) => console.error(err)
     })
+  }
+
+  openUpdateTodoDialog(currentTodo: Todo) {
+    const dialogRef = this.dialog.open(UpdateTodoDialog, {
+      data: {
+        todo: {
+          title: currentTodo.title,
+          body: currentTodo.body,
+          state: currentTodo.state,
+          categoryId: currentTodo.category?.id
+        },
+        categories: this.categories
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      const safeParsedForm = todoUpdateFormSchema.safeParse(result)
+
+      if (safeParsedForm.success) {
+        this.http.put<Todo>(`/api/todos/${currentTodo.id}`, {
+          title: safeParsedForm.data.todo.title,
+          body: safeParsedForm.data.todo.body,
+          categoryId: safeParsedForm.data.todo.categoryId,
+          state: safeParsedForm.data.todo.state
+        }).subscribe({
+          next: (todo) =>
+            this.todos = this.todos.with(this.todos.indexOf(currentTodo), todo)
+          ,
+          error: (err) => console.error(err)
+        })
+      }
+    })
+  }
+}
+
+@Component({
+  selector: 'update-todo-dialog',
+  templateUrl: 'update-todo-dialog.html',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+  ]
+})
+export class UpdateTodoDialog {
+  readonly dialogRef = inject(MatDialogRef<UpdateTodoDialog>)
+  readonly data = inject<TodoUpdateForm>(MAT_DIALOG_DATA)
+  readonly todo = model(this.data)
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }
