@@ -13,10 +13,10 @@ export class TodoStatePipe implements PipeTransform {
       return "進行中"
     } else if (value === "Done") {
       return "完了"
+    } else {
+      const _exhaustiveCheck: never = value
+      throw new Error("Unreachable: " + _exhaustiveCheck)
     }
-
-    // NOTE: TodoState が増えない限りはここに到達しない
-    return ""
   }
 
 }
