@@ -11,6 +11,10 @@ import com.example.infra.CategoryRepositoryImpl
 import com.example.infra.TodoRepositoryImpl
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.server.Router
+import com.example.todoapp.endpoints.ApiEndpoints
+import com.example.todoapp.endpoints.InternalEndpoints
+import com.example.todoapp.endpoints.OpenAPIEndpoint
+import com.example.todoapp.endpoints.SpaEndpoints
 
 object Main extends IOApp {
 
@@ -19,9 +23,12 @@ object Main extends IOApp {
     given todoRepository: TodoRepository[IO]             = new TodoRepositoryImpl[IO]
     given cateogryRepository: CategoryRepository[IO]     = new CategoryRepositoryImpl[IO]
 
-    val todoAppEndpoints = new TodoappEndpoints()
+    val todoAppEndpoints = new ApiEndpoints().endpoints
+      ++ InternalEndpoints.endpoints
+      ++ new OpenAPIEndpoint().endpoints
+      ++ SpaEndpoints.endpoints
 
-    val routes = Http4sServerInterpreter[IO]().toRoutes(todoAppEndpoints.allEndpoints)
+    val routes = Http4sServerInterpreter[IO]().toRoutes(todoAppEndpoints)
 
     EmberServerBuilder
       .default[IO]
