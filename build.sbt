@@ -2,6 +2,7 @@ ThisBuild / scalaVersion := "3.3.6"
 ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.example"
 
+val TapirVersion = "1.11.25"
 val DoobieVersion = "1.0.0-RC10"
 val Http4sVersion = "0.23.30"
 val CirceVersion = "0.14.14"
@@ -32,16 +33,17 @@ lazy val `todo-app` = (project in file("."))
   .settings(
     name := "todo-app",
     libraryDependencies ++= Seq(
-      "org.http4s"      %% "http4s-ember-server" % Http4sVersion,
-      "org.http4s"      %% "http4s-ember-client" % Http4sVersion,
-      "org.http4s"      %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
-      "org.http4s"      %% "http4s-circe"        % Http4sVersion,
-      "io.circe"        %% "circe-generic"       % CirceVersion,
-      "io.circe"        %% "circe-literal"       % CirceVersion,
-      "org.scalameta"   %% "munit"               % MunitVersion           % Test,
-      "org.typelevel"   %% "munit-cats-effect"   % MunitCatsEffectVersion % Test,
-      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion         % Runtime,
+      "com.softwaremill.sttp.tapir" %% "tapir-core"              % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-http4s-server"     % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-files"             % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % TapirVersion,
+      "org.http4s"                  %% "http4s-ember-server"     % Http4sVersion,
+      "io.circe"                    %% "circe-generic"           % CirceVersion,
+      "io.circe"                    %% "circe-literal"           % CirceVersion,
+      "org.scalameta"               %% "munit"                   % MunitVersion           % Test,
+      "org.typelevel"               %% "munit-cats-effect"       % MunitCatsEffectVersion % Test,
+      "ch.qos.logback"              %  "logback-classic"         % LogbackVersion         % Runtime,
     ),
     Compile / unmanagedSourceDirectories += baseDirectory.value / "scala",
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
