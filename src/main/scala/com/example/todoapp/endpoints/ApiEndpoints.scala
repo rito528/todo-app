@@ -76,10 +76,7 @@ class ApiEndpoints(
     def createCategoryLogic: CreateCategoryRequestSchema => IO[Either[Unit, Category]] = (schema: CreateCategoryRequestSchema) => {
       for {
         categoryId <- categoryRepository.createCategory(schema.toCategory)
-        categories <- categoryRepository.fetchAllCategory
-      } yield {
-        categories.find(_.id == categoryId).toRight(())
-      }
+      } yield Right(schema.toCategory.copy(id = Some(categoryId)))
     }
 
     def putCategoryLogic: ((Int, PutCategoryRequestSchema)) => IO[Either[Unit, Category]] = (categoryIdWithPutSchema: (Int, PutCategoryRequestSchema)) => {
