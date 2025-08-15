@@ -81,11 +81,11 @@ class ApiEndpoints(
 
     def putCategoryLogic: ((Int, PutCategoryRequestSchema)) => IO[Either[Unit, Category]] = (categoryIdWithPutSchema: (Int, PutCategoryRequestSchema)) => {
       val categoryId = CategoryId(categoryIdWithPutSchema._1)
+      val category   = categoryIdWithPutSchema._2.toCategory
 
       for {
-        _          <- categoryRepository.updateCategory(categoryId, categoryIdWithPutSchema._2.toCategory)
-        categories <- categoryRepository.fetchAllCategory
-      } yield categories.find(_.id == categoryId).toRight(())
+        _ <- categoryRepository.updateCategory(categoryId, categoryIdWithPutSchema._2.toCategory)
+      } yield Right(category)
     }
 
     def deleteCategoryLogic: (Int) => IO[Either[Unit, Unit]] = (categoryId) => {
