@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { z } from 'zod';
+import { MatButtonModule } from '@angular/material/button';
 
 export const todoUpdateFormSchema = z.object({
   categories: categorySchema.array(),
@@ -31,6 +32,7 @@ type TodoUpdateForm = z.infer<typeof todoUpdateFormSchema>
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
+    MatButtonModule,
   ]
 })
 export class UpdateTodoDialog {
