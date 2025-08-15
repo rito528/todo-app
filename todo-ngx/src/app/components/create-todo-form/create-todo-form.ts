@@ -48,6 +48,11 @@ export class CreateTodoForm {
       next: (todo) => {
         this.todos = [...this.todos, todo]
         this.createTodoEventEmitter.emit(todo)
+        this.createTodoForm.reset({
+          title: '',
+          body: '',
+          category: undefined
+        })
       },
       error: (err) => console.error(err)
     })
