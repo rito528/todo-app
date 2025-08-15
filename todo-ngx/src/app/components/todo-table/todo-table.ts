@@ -5,7 +5,7 @@ import { TodoStatePipe } from "../../pipes/todo-state-pipe";
 import { Category, Todo } from "../../../types";
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
-import { todoUpdateFormSchema, UpdateTodoDialog } from "../update-dialog/update-todo-dialog";
+import { todoUpdateFormSchema, UpdateTodoDialog } from "../update-todo-dialog/update-todo-dialog";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
