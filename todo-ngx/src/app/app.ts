@@ -35,4 +35,8 @@ export class App {
       error: (err) => console.error(err)
     })
   }
+
+  createTodoEvent(todo: Todo) {
+    this.todos = [...this.todos, todo] 
+  }
 }
