@@ -32,7 +32,7 @@ export class CategoryTable {
 
   openUpdateCategoryDialog(currentCategory: Category) {
     const dialogRef = this.dialog.open(UpdateCategoryDialog, {
-      data: currentCategory
+      data: structuredClone(currentCategory)
     })
 
     dialogRef.afterClosed().subscribe(result => {
