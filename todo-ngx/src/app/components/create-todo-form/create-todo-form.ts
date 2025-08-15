@@ -11,6 +11,7 @@ import { MatButtonModule } from "@angular/material/button";
 @Component({
   selector: 'create-todo-form',
   templateUrl: 'create-todo-form.html',
+  styleUrl: 'create-todo-form.scss',
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
