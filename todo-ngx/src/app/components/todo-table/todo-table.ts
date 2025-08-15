@@ -1,5 +1,4 @@
 import { Component, inject, Input } from "@angular/core";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTableModule } from "@angular/material/table";
 import { TodoStatePipe } from "../../pipes/todo-state-pipe";
 import { Category, Todo } from "../../../types";
@@ -15,7 +14,6 @@ import { MatButtonModule } from "@angular/material/button";
   templateUrl: 'todo-table.html',
   imports: [
     MatTableModule,
-    MatFormFieldModule,
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
