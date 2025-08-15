@@ -3,8 +3,8 @@ package com.example.todoapp.endpoints
 import sttp.tapir.*
 import sttp.tapir.json.circe.*
 import com.example.todoapp.Responses.TodoResponse
-import com.example.todoapp.Encoders.{ encodeCategories, encodeTodoResponses }
-import com.example.todoapp.Decoders.{ decodeCategories, decodeTodoResponses }
+import com.example.todoapp.Encoders.{ encodeCategory, encodeCategories, encodeTodoResponses }
+import com.example.todoapp.Decoders.{ decodeCategory, decodeCategories, decodeTodoResponses }
 import com.example.todoapp.Schemas.*
 import com.example.domain.TodoRepository
 import com.example.domain.CategoryRepository
@@ -15,6 +15,9 @@ import com.example.domain.Todo
 import com.example.domain.Category
 import com.example.todoapp.Requests.PutTodoRequestSchema
 import com.example.domain.TodoId
+import com.example.todoapp.Requests.CreateCategoryRequestSchema
+import com.example.todoapp.Requests.PutCategoryRequestSchema
+import com.example.domain.CategoryId
 
 class ApiEndpoints(
   using
@@ -69,6 +72,28 @@ class ApiEndpoints(
     def deleteTodoLogic: (Int) => IO[Either[Unit, Unit]] = (todoId) => {
       todoRepository.deleteTodo(TodoId(todoId)).map(_ => Right(()))
     }
+
+    def createCategoryLogic: CreateCategoryRequestSchema => IO[Either[Unit, Category]] = (schema: CreateCategoryRequestSchema) => {
+      for {
+        categoryId <- categoryRepository.createCategory(schema.toCategory)
+        categories <- categoryRepository.fetchAllCategory
+      } yield {
+        categories.find(_.id == categoryId).toRight(())
+      }
+    }
+
+    def putCategoryLogic: ((Int, PutCategoryRequestSchema)) => IO[Either[Unit, Category]] = (categoryIdWithPutSchema: (Int, PutCategoryRequestSchema)) => {
+      val categoryId = CategoryId(categoryIdWithPutSchema._1)
+
+      for {
+        _          <- categoryRepository.updateCategory(categoryId, categoryIdWithPutSchema._2.toCategory)
+        categories <- categoryRepository.fetchAllCategory
+      } yield categories.find(_.id == categoryId).toRight(())
+    }
+
+    def deleteCategoryLogic: (Int) => IO[Either[Unit, Unit]] = (categoryId) => {
+      categoryRepository.deleteCategory(CategoryId(categoryId)).map(_ => Right(()))
+    }
   }
 
   private def createTodoEndpoint: PublicEndpoint[CreateTodoRequestSchema, Unit, TodoResponse, Any] = {
@@ -91,11 +116,26 @@ class ApiEndpoints(
     endpoint.get.in("api" / "categories").out(jsonBody[List[Category]])
   }
 
+  private def createCategoryEndpoint: PublicEndpoint[CreateCategoryRequestSchema, Unit, Category, Any] = {
+    endpoint.post.in("api" / "categories").in(jsonBody[CreateCategoryRequestSchema]).out(jsonBody[Category])
+  }
+
+  private def putCategoryEndpoint: PublicEndpoint[(Int, PutCategoryRequestSchema), Unit, Category, Any] = {
+    endpoint.put.in("api" / "categories" / path[Int]).in(jsonBody[PutCategoryRequestSchema]).out(jsonBody[Category])
+  }
+
+  private def deleteCategoryEndpoint: PublicEndpoint[Int, Unit, Unit, Any] = {
+    endpoint.delete.in("api" / "categories" / path[Int])
+  }
+
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
     getTodoEndpoint.serverLogic(ApiEndpointServerLogics.getTodoLogic),
     createTodoEndpoint.serverLogic(ApiEndpointServerLogics.createTodoLogic),
     putTodoEndpoint.serverLogic(ApiEndpointServerLogics.putTodoLogic),
     deleteTodoEndpoint.serverLogic(ApiEndpointServerLogics.deleteTodoLogic),
     getAllCategoriesEndpoint.serverLogic(ApiEndpointServerLogics.getAllCategoriesLogic),
+    createCategoryEndpoint.serverLogic(ApiEndpointServerLogics.createCategoryLogic),
+    putCategoryEndpoint.serverLogic(ApiEndpointServerLogics.putCategoryLogic),
+    deleteCategoryEndpoint.serverLogic(ApiEndpointServerLogics.deleteCategoryLogic)
   )
 }
