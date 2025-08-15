@@ -6,6 +6,12 @@ import com.example.domain.Body
 import com.example.domain.TodoState
 import com.example.domain.Category
 import com.example.domain.Todo
+import io.circe.Encoder
+import io.circe.Decoder
+import sttp.tapir.Schema
+import com.example.todoapp.Encoders.{ encodeTodoId, encodeCategory, encodeTitle, encodeBody, encodeState }
+import com.example.todoapp.Decoders.{ decodeTodoId, decodeCategory, decodeTitle, decodeBody, decodeState }
+import com.example.todoapp.Schemas.*
 
 object Responses {
   case class TodoResponse(
@@ -14,7 +20,7 @@ object Responses {
     title:    Title,
     body:     Body,
     state:    TodoState
-  )
+  ) derives Encoder, Decoder, Schema
 
   object TodoResponse {
 

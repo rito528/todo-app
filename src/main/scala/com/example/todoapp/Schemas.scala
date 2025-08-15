@@ -9,6 +9,7 @@ import com.example.domain.CategoryId
 import com.example.domain.CategoryName
 import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
+import com.example.domain.Category
 
 object Schemas {
   // Schema を実装するには given ではなく implicit def を用いる必要がある
@@ -23,4 +24,5 @@ object Schemas {
   implicit def categoryNameSchema: Schema[CategoryName]   = Schema.string[CategoryName]
   implicit def categorySlugSchema: Schema[CategorySlug]   = Schema.string[CategorySlug]
   implicit def categoryColorSchema: Schema[CategoryColor] = Schema.string[CategoryColor]
+  implicit def categorySchema: Schema[Category]           = Schema.derived
 }

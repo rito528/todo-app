@@ -1,0 +1,23 @@
+<form class="create-todo-form" [formGroup]="createTodoForm" (ngSubmit)="onCreateTodo()">
+  <mat-form-field class="max-width">
+    <mat-label>タイトル</mat-label>
+    <input matInput formControlName="title" required>
+  </mat-form-field>
+
+  <mat-form-field class="max-width">
+    <mat-label>本文</mat-label>
+    <textarea matInput formControlName="body" required></textarea>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>カテゴリ</mat-label>
+    <mat-select formControlName="category" canSelectNullableOptions>
+      <mat-option [value]="null">未分類</mat-option>
+      @for (category of categories; track category.name) {
+      <mat-option [value]="category.id">{{ category.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button matButton="filled" type="submit">作成</button>
+</form>
