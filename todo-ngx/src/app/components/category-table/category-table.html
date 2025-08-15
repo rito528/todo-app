@@ -21,7 +21,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>更新</button>
+        <button mat-menu-item (click)="openUpdateCategoryDialog(element)">更新</button>
         <button mat-menu-item>削除</button>
       </mat-menu>
     </td>
