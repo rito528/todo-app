@@ -36,7 +36,7 @@ object CategorySlug  {
   def apply(value: String): CategorySlug = {
     require(value.length <= 32)
 
-    val regex = "^[0-9a-zA-Z]+$"
+    val regex = "^[0-9a-zA-Z]+$".r
     require(regex.matches(value))
 
     value
