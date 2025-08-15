@@ -49,4 +49,20 @@ export class App {
   createCategoryEvent(category: Category) {
     this.categories = [...this.categories, category]
   }
+
+  editCategoriesEventEmitter(categories: Category[]) {
+    this.categories = categories
+    this.todos = this.todos.map(todo => {
+      const category = this.categories.find(category => category.id === todo.category?.id)
+      
+      if (category === undefined) {
+        return {
+          ...todo,
+          category: null
+        }
+      } else {
+        return todo
+      }
+    })
+  }
 }
