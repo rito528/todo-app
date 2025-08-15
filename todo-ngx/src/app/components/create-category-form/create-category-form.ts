@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Output } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { HttpClient } from "@angular/common/http";
 import { MatInputModule } from "@angular/material/input";
@@ -24,26 +24,33 @@ export class CreateCategoryForm {
   createCategoryEventEmitter: EventEmitter<Category> = new EventEmitter()
 
   createCategoryForm = new FormGroup({
-    name: new FormControl(''),
-    slug: new FormControl(''),
+    name: new FormControl('', [
+      Validators.minLength(1),
+      Validators.maxLength(32)
+    ]),
+    slug: new FormControl('', [
+      Validators.pattern('^[0-9A-Za-z]+$')
+    ]),
     color: new FormControl('#000000'),
   })
 
   onCreateCategory() {
-    this.http.post<Category>('/api/categories', {
-      name: this.createCategoryForm.controls.name.value,
-      slug: this.createCategoryForm.controls.slug.value,
-      color: this.createCategoryForm.controls.color.value,
-    }).subscribe({
-      next: (category) => {
-        this.createCategoryEventEmitter.emit(category)
-        this.createCategoryForm.reset({
-          name: '',
-          slug: '',
-          color: '#000000'
-        })
-      },
-      error: (err) => console.error(err)
-    })
+    if (this.createCategoryForm.valid) {
+      this.http.post<Category>('/api/categories', {
+        name: this.createCategoryForm.controls.name.value,
+        slug: this.createCategoryForm.controls.slug.value,
+        color: this.createCategoryForm.controls.color.value,
+      }).subscribe({
+        next: (category) => {
+          this.createCategoryEventEmitter.emit(category)
+          this.createCategoryForm.reset({
+            name: '',
+            slug: '',
+            color: '#000000'
+          })
+        },
+        error: (err) => console.error(err)
+      })
+    }
   }
 }
