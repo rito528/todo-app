@@ -1,6 +1,6 @@
 <main class="main">
   <div class="content">
-    <create-todo-form [todos]="todos" [categories]="categories" />
+    <create-todo-form [todos]="todos" [categories]="categories" (createTodoEventEmitter)="createTodoEvent($event)" />
     <todo-table [todos]="todos" [categories]="categories" />
   </div>
 </main>

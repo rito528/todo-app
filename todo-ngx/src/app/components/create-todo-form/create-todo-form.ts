@@ -1,4 +1,4 @@
-import { Component, inject, Input } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { Category, Todo } from "../../../types";
@@ -30,6 +30,9 @@ export class CreateTodoForm {
   @Input()
   categories: Category[] = []
 
+  @Output()
+  createTodoEventEmitter: EventEmitter<Todo> = new EventEmitter()
+
   createTodoForm = new FormGroup({
     title: new FormControl(''),
     body: new FormControl(''),
@@ -42,7 +45,10 @@ export class CreateTodoForm {
       body: this.createTodoForm.controls.body.value,
       categoryId: this.createTodoForm.controls.category.value
     }).subscribe({
-      next: (todo) => this.todos = [...this.todos, todo],
+      next: (todo) => {
+        this.todos = [...this.todos, todo]
+        this.createTodoEventEmitter.emit(todo)
+      },
       error: (err) => console.error(err)
     })
   }
