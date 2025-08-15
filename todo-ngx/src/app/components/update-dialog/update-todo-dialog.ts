@@ -23,6 +23,7 @@ type TodoUpdateForm = z.infer<typeof todoUpdateFormSchema>
 @Component({
   selector: 'update-todo-dialog',
   templateUrl: 'update-todo-dialog.html',
+  styleUrl: 'update-todo-dialog.scss',
   imports: [
     MatFormFieldModule,
     MatInputModule,
