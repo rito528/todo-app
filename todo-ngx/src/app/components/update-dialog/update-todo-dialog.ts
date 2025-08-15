@@ -1,5 +1,5 @@
 import { Component, inject, model } from '@angular/core';
-import { categorySchema, todoStateSchema } from '../../types';
+import { categorySchema, todoStateSchema } from '../../../types';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
