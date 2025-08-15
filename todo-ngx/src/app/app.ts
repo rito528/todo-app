@@ -7,6 +7,7 @@ import { TodoTable } from './components/todo-table/todo-table';
 import { CreateTodoForm } from './components/create-todo-form/create-todo-form';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CategoryTable } from './components/category-table/category-table';
+import { CreateCategoryForm } from './components/create-category-form/create-category-form';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { CategoryTable } from './components/category-table/category-table';
     TodoTable,
     CreateTodoForm,
     CategoryTable,
+    CreateCategoryForm,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
