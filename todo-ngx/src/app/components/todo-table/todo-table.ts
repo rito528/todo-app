@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, Input } from "@angular/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTableModule } from "@angular/material/table";
 import { TodoStatePipe } from "../../pipes/todo-state-pipe";
@@ -26,7 +26,10 @@ export class TodoTable {
   private http = inject(HttpClient)
   readonly dialog = inject(MatDialog)
 
+  @Input()
   todos: Todo[] = []
+
+  @Input()
   categories: Category[] = []
   
   displayedColumns: string[] = ["title", "body", "state", "category", "operation"]
