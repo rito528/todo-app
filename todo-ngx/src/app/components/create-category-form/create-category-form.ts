@@ -26,7 +26,7 @@ export class CreateCategoryForm {
   createCategoryForm = new FormGroup({
     name: new FormControl(''),
     slug: new FormControl(''),
-    color: new FormControl(''),
+    color: new FormControl('#000000'),
   })
 
   onCreateCategory() {
@@ -40,7 +40,7 @@ export class CreateCategoryForm {
         this.createCategoryForm.reset({
           name: '',
           slug: '',
-          color: ''
+          color: '#000000'
         })
       },
       error: (err) => console.error(err)
