@@ -12,14 +12,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
-import { todoUpdateFormSchema, UpdateTodoDialog } from './update-dialog/update-todo-dialog';
+import { TodoTable } from './components/todo-table/todo-table';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     MatTableModule,
-    TodoStatePipe,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -27,6 +26,7 @@ import { todoUpdateFormSchema, UpdateTodoDialog } from './update-dialog/update-t
     MatSelectModule,
     MatIconModule,
     MatMenuModule,
+    TodoTable
   ],
   templateUrl: './app.html',
   styleUrl: './app.sass'
@@ -51,8 +51,6 @@ export class App {
     })
   }
 
-  displayedColumns: string[] = ["title", "body", "state", "category", "operation"]
-
   createTodoForm = new FormGroup({
     title: new FormControl(''),
     body: new FormControl(''),
@@ -67,37 +65,6 @@ export class App {
     }).subscribe({
       next: (todo) => this.todos = [...this.todos, todo],
       error: (err) => console.error(err)
-    })
-  }
-
-  openUpdateTodoDialog(currentTodo: Todo) {
-    const dialogRef = this.dialog.open(UpdateTodoDialog, {
-      data: {
-        todo: {
-          title: currentTodo.title,
-          body: currentTodo.body,
-          state: currentTodo.state,
-          categoryId: currentTodo.category?.id
-        },
-        categories: this.categories
-      }
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      const safeParsedForm = todoUpdateFormSchema.safeParse(result)
-
-      if (safeParsedForm.success) {
-        this.http.put<Todo>(`/api/todos/${currentTodo.id}`, {
-          ...safeParsedForm.data.todo
-        }).subscribe({
-          next: (todo) => this.todos = this.todos
-            .with(
-              this.todos.indexOf(currentTodo),
-              todo
-            ),
-          error: (err) => console.error(err)
-        })
-      }
     })
   }
 
