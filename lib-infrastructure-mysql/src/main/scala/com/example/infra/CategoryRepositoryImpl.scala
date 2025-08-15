@@ -48,8 +48,8 @@ class CategoryRepositoryImpl[F[_]: Async](
   override def updateCategory(categoryId: CategoryId, category: Category): F[Unit] = pool.transactor.use { xa =>
     sql"""
     | UPDATE category SET
-    | name = ${category.name.unwrap}
-    | slug = ${category.slug.unwrap}
+    | name = ${category.name.unwrap},
+    | slug = ${category.slug.unwrap},
     | color = ${category.color.unwrap}
     | WHERE id = ${categoryId.unwrap}"""
       .stripMargin
