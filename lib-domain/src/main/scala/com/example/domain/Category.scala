@@ -2,7 +2,7 @@ package com.example.domain
 
 opaque type CategoryId = Int
 
-object CategoryId {
+object CategoryId    {
   def apply(value: Int): CategoryId = {
     require(value >= 0)
     value
@@ -15,9 +15,13 @@ object CategoryId {
 
 opaque type CategoryName = String
 
-object CategoryName {
+object CategoryName  {
   def apply(value: String): CategoryName = {
-    require(value.length <= 32)
+    require(value.length <= 32 && value.contains("¥n"))
+
+    val regex = "\r\n|\n|\r".r
+    require(!regex.matches(value))
+
     value
   }
 
@@ -28,7 +32,7 @@ object CategoryName {
 
 opaque type CategorySlug = String
 
-object CategorySlug {
+object CategorySlug  {
   def apply(value: String): CategorySlug = {
     require(value.length <= 32)
     value
@@ -53,9 +57,9 @@ object CategoryColor {
 }
 
 final case class Category(
-  id: Option[CategoryId],
-  name: CategoryName,
-  slug: CategorySlug,
+  id:    Option[CategoryId],
+  name:  CategoryName,
+  slug:  CategorySlug,
   color: CategoryColor
 )
 
