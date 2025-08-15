@@ -49,4 +49,11 @@ export class CategoryTable {
       }
     })
   }
+
+  onDeleteCategory(categoryId: number) {
+    this.http.delete(`/api/categories/${categoryId}`).subscribe({
+      next: () => this.categories = this.categories.filter((category) => category.id !== categoryId),
+      error: (err) => console.error(err)
+    })
+  }
 }

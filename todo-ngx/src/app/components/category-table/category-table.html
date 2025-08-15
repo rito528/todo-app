@@ -22,7 +22,7 @@
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="openUpdateCategoryDialog(element)">更新</button>
-        <button mat-menu-item>削除</button>
+        <button mat-menu-item (click)="onDeleteCategory(element.id)">削除</button>
       </mat-menu>
     </td>
   </ng-container>
