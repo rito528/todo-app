@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>カテゴリの更新</h2>
+<mat-dialog-content class="dialog-content">
+  <mat-form-field>
+    <mat-label>カテゴリ名</mat-label>
+    <input matInput [(ngModel)]="data.name" required>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>俗名</mat-label>
+    <input matInput [(ngModel)]="data.slug" required>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>色</mat-label>
+    <input matInput type="color" [(ngModel)]="data.color" required>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="onCancel()">キャンセル</button>
+  <button matButton [mat-dialog-close]="category()" cdkDocusInitial>更新</button>
+</mat-dialog-actions>

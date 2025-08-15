@@ -5,13 +5,19 @@ import { Category, Todo } from '../types';
 import { MatDialog } from '@angular/material/dialog';
 import { TodoTable } from './components/todo-table/todo-table';
 import { CreateTodoForm } from './components/create-todo-form/create-todo-form';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CategoryTable } from './components/category-table/category-table';
+import { CreateCategoryForm } from './components/create-category-form/create-category-form';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
+    MatTabsModule,
     TodoTable,
-    CreateTodoForm
+    CreateTodoForm,
+    CategoryTable,
+    CreateCategoryForm,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
@@ -38,5 +44,25 @@ export class App {
 
   createTodoEvent(todo: Todo) {
     this.todos = [...this.todos, todo] 
+  }
+
+  createCategoryEvent(category: Category) {
+    this.categories = [...this.categories, category]
+  }
+
+  editCategoriesEventEmitter(categories: Category[]) {
+    this.categories = categories
+    this.todos = this.todos.map(todo => {
+      const category = this.categories.find(category => category.id === todo.category?.id)
+      
+      if (category === undefined) {
+        return {
+          ...todo,
+          category: null
+        }
+      } else {
+        return todo
+      }
+    })
   }
 }

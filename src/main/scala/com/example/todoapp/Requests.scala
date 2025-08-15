@@ -6,12 +6,16 @@ import com.example.domain.Todo
 import sttp.tapir.Schema
 import io.circe.Encoder
 import io.circe.Decoder
-import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId }
-import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId }
+import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId, encodeCategoryName, encodeCategorySlug, encodeCategoryColor }
+import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId, decodeCategoryName, decodeCategorySlug, decodeCategoryColor }
 import com.example.todoapp.Schemas.*
 import com.example.domain.CategoryId
 import com.example.domain.TodoState
 import com.example.domain.TodoId
+import com.example.domain.CategorySlug
+import com.example.domain.CategoryName
+import com.example.domain.CategoryColor
+import com.example.domain.Category
 
 object Requests {
   case class CreateTodoRequestSchema(
@@ -42,6 +46,30 @@ object Requests {
         schema.body,
         schema.state
       )
+    }
+  }
+
+  case class CreateCategoryRequestSchema(
+    name:  CategoryName,
+    slug:  CategorySlug,
+    color: CategoryColor
+  ) derives Encoder, Decoder, Schema
+
+  object CreateCategoryRequestSchema {
+    extension (schema: CreateCategoryRequestSchema) {
+      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
+    }
+  }
+
+  case class PutCategoryRequestSchema(
+    name:  CategoryName,
+    slug:  CategorySlug,
+    color: CategoryColor
+  ) derives Encoder, Decoder, Schema
+
+  object PutCategoryRequestSchema {
+    extension (schema: PutCategoryRequestSchema) {
+      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
     }
   }
 }
