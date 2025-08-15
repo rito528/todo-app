@@ -34,18 +34,6 @@ export class TodoTable {
   
   displayedColumns: string[] = ["title", "body", "state", "category", "operation"]
 
-  constructor() {
-    this.http.get<Todo[]>('/api/todos').subscribe({
-      next: (todos) => this.todos = todos,
-      error: (err) => console.error(err)
-    })
-
-    this.http.get<Category[]>('/api/categories').subscribe({
-      next: (categories) => this.categories = categories,
-      error: (err) => console.error(err)
-    })
-  }
-
   openUpdateTodoDialog(currentTodo: Todo) {
     const dialogRef = this.dialog.open(UpdateTodoDialog, {
       data: {
