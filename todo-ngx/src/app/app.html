@@ -7,7 +7,7 @@
       </mat-tab>
       <mat-tab label="カテゴリ">
         <create-category-form (createCategoryEventEmitter)="createCategoryEvent($event)" />
-        <category-table [categories]="categories" />
+        <category-table [categories]="categories" (editCategoriesEventEmitter)="editCategoriesEventEmitter($event)" />
       </mat-tab>
     </mat-tab-group>
   </div>

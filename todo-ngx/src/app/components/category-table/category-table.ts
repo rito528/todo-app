@@ -1,4 +1,4 @@
-import { Component, inject, Input } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { Category, categorySchema } from "../../../types";
 import { MatTableModule } from "@angular/material/table";
 import { MatMenuModule } from "@angular/material/menu";
@@ -24,6 +24,9 @@ export class CategoryTable {
 
   @Input()
   categories: Category[] = []
+
+  @Output()
+  editCategoriesEventEmitter: EventEmitter<Category[]> = new EventEmitter()
   
   readonly displayedColumns: string[] = ['name', 'slug', 'color', 'operation']
 
@@ -39,11 +42,15 @@ export class CategoryTable {
         this.http.put<Category>(`/api/categories/${safeParsedCategory.data.id}`, {
           ...safeParsedCategory.data
         }).subscribe({
-          next: (category) => this.categories = this.categories
-            .with(
-              this.categories.indexOf(currentCategory),
-              category
-            ),
+          next: (category) => {
+            this.categories = this.categories
+              .with(
+                this.categories.indexOf(currentCategory),
+                category
+              )
+
+            this.editCategoriesEventEmitter.emit(this.categories)
+          },
           error: (err) => console.error(err)
         })
       }
@@ -52,7 +59,10 @@ export class CategoryTable {
 
   onDeleteCategory(categoryId: number) {
     this.http.delete(`/api/categories/${categoryId}`).subscribe({
-      next: () => this.categories = this.categories.filter((category) => category.id !== categoryId),
+      next: () => {
+        this.categories = this.categories.filter((category) => category.id !== categoryId)
+        this.editCategoriesEventEmitter.emit(this.categories)
+      },
       error: (err) => console.error(err)
     })
   }
