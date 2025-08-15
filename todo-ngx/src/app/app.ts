@@ -14,7 +14,7 @@ import { CreateTodoForm } from './components/create-todo-form/create-todo-form';
     CreateTodoForm
   ],
   templateUrl: './app.html',
-  styleUrl: './app.sass'
+  styleUrl: './app.scss'
 })
 @Injectable({ providedIn: 'root' })
 export class App {
