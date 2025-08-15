@@ -17,7 +17,7 @@ opaque type CategoryName = String
 
 object CategoryName  {
   def apply(value: String): CategoryName = {
-    require(value.length <= 32 && value.contains("¥n"))
+    require(value.length <= 32)
 
     val regex = "\r\n|\n|\r".r
     require(!regex.matches(value))
