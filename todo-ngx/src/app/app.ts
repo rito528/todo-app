@@ -45,4 +45,8 @@ export class App {
   createTodoEvent(todo: Todo) {
     this.todos = [...this.todos, todo] 
   }
+
+  createCategoryEvent(category: Category) {
+    this.categories = [...this.categories, category]
+  }
 }

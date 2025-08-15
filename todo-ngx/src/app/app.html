@@ -6,7 +6,7 @@
         <todo-table [todos]="todos" [categories]="categories" />
       </mat-tab>
       <mat-tab label="カテゴリ">
-        <create-category-form />
+        <create-category-form (createCategoryEventEmitter)="createCategoryEvent($event)" />
         <category-table [categories]="categories" />
       </mat-tab>
     </mat-tab-group>
