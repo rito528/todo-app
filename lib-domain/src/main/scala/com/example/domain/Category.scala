@@ -35,6 +35,10 @@ opaque type CategorySlug = String
 object CategorySlug  {
   def apply(value: String): CategorySlug = {
     require(value.length <= 32)
+
+    val regex = "^[0-9a-zA-Z]+$"
+    require(regex.matches(value))
+
     value
   }
 
