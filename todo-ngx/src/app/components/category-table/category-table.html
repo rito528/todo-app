@@ -11,7 +11,9 @@
 
   <ng-container matColumnDef="color">
     <th mat-header-cell *matHeaderCellDef>色</th>
-    <td mat-cell *matCellDef="let element"> {{ element.color }} </td>
+    <td mat-cell *matCellDef="let element"> 
+      <input matInput type="color" [value]="element.color" disabled>
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="operation">
