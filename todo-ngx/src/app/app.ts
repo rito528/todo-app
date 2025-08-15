@@ -5,13 +5,17 @@ import { Category, Todo } from '../types';
 import { MatDialog } from '@angular/material/dialog';
 import { TodoTable } from './components/todo-table/todo-table';
 import { CreateTodoForm } from './components/create-todo-form/create-todo-form';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CategoryTable } from './components/category-table/category-table';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
+    MatTabsModule,
     TodoTable,
-    CreateTodoForm
+    CreateTodoForm,
+    CategoryTable,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

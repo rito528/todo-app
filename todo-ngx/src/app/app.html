@@ -1,7 +1,14 @@
 <main class="main">
   <div class="content">
-    <create-todo-form [todos]="todos" [categories]="categories" (createTodoEventEmitter)="createTodoEvent($event)" />
-    <todo-table [todos]="todos" [categories]="categories" />
+    <mat-tab-group>
+      <mat-tab label="Todo">
+        <create-todo-form [todos]="todos" [categories]="categories" (createTodoEventEmitter)="createTodoEvent($event)" />
+        <todo-table [todos]="todos" [categories]="categories" />
+      </mat-tab>
+      <mat-tab label="カテゴリ">
+        <category-table [categories]="categories" />
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </main>
 
