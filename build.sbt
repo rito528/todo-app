@@ -20,7 +20,8 @@ lazy val `lib-infrastructure-mysql` = (project in file("./lib-infrastructure-mys
       "org.tpolecat" %% "doobie-core"     % DoobieVersion,
       "org.tpolecat" %% "doobie-specs2"   % DoobieVersion % Test,
       "org.tpolecat" %% "doobie-hikari"   % DoobieVersion,
-      "com.zaxxer" % "HikariCP" % "7.0.0"
+      "com.zaxxer" % "HikariCP" % "7.0.0",
+      "software.amazon.jdbc" % "aws-advanced-jdbc-wrapper" % "2.6.1"
     )
   )
 

@@ -18,8 +18,15 @@ case class DatabaseConnectionPool(
     hikariConfig <- Resource.pure {
       val config = new HikariConfig();
 
-      config.setDriverClassName("com.mysql.cj.jdbc.Driver")
-      config.setJdbcUrl(s"jdbc:mysql://$host:$port/to_do")
+      val jdbcUrl =
+        if (host == "localhost") {
+          s"jdbc:aws-wrapper:mysql://$host:$port/to_do?allowPublicKeyRetrieval=true&useSSL=false&wrapperPlugins="
+        } else {
+          s"jdbc:aws-wrapper:mysql://$host:$port/to_do"
+        }
+
+      config.setDriverClassName("software.amazon.jdbc.Driver")
+      config.setJdbcUrl(jdbcUrl)
       config.setUsername(user)
       config.setPassword(password)
 
