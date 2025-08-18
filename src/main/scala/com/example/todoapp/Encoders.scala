@@ -16,15 +16,15 @@ object Encoders {
   // NOTE: Opaque type の Encoder は明示的に実装する必要がある
   // ref: https://github.com/circe/circe/issues/1829
 
-  given encodeTodoId: Encoder[TodoId] = Encoder[Int].contramap(_.unwrap)
-  given encodeTitle: Encoder[Title] = Encoder[String].contramap(_.unwrap)
-  given encodeBody: Encoder[Body] = Encoder[String].contramap(_.unwrap)
+  given encodeTodoId: Encoder[TodoId]   = Encoder[Int].contramap(_.unwrap)
+  given encodeTitle: Encoder[Title]     = Encoder[String].contramap(_.unwrap)
+  given encodeBody: Encoder[Body]       = Encoder[String].contramap(_.unwrap)
   given encodeState: Encoder[TodoState] = Encoder[String].contramap(_.toString)
 
-  given encodeCategoryId: Encoder[CategoryId] = Encoder[Int].contramap(_.unwrap)
-  given encodeCategoryName: Encoder[CategoryName] = Encoder[String].contramap(_.unwrap)
-  given encodeCategorySlug: Encoder[CategorySlug] = Encoder[String].contramap(_.unwrap)
+  given encodeCategoryId: Encoder[CategoryId]       = Encoder[Int].contramap(_.unwrap)
+  given encodeCategoryName: Encoder[CategoryName]   = Encoder[String].contramap(_.unwrap)
+  given encodeCategorySlug: Encoder[CategorySlug]   = Encoder[String].contramap(_.unwrap)
   given encodeCategoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
 
-  given encodeTodoResponses: Encoder[Vector[TodoResponse]] = Encoder.encodeVector[TodoResponse]
+  given encodeTodoResponses: Encoder[List[TodoResponse]] = Encoder.encodeList[TodoResponse]
 }
