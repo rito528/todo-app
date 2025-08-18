@@ -4,6 +4,7 @@ import cats.effect.IO
 import sttp.tapir.*
 import scala.io.Source
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.files.*
 
 object SpaEndpoints {
   private object SpaServerLogics {
@@ -19,6 +20,7 @@ object SpaEndpoints {
   }
 
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
-    angularAppEndpoint.serverLogic(SpaServerLogics.angularAppLogic)
+    angularAppEndpoint.serverLogic(SpaServerLogics.angularAppLogic),
+    staticFilesGetServerEndpoint("assets")("public/"),
   )
 }
