@@ -7,17 +7,19 @@ import cats.effect.kernel.Resource
 import cats.effect.kernel.Async
 
 case class DatabaseConnectionPool(
-  url:      String,
+  host:     String,
+  port:     Short,
   user:     String,
   password: String
 ) {
+  require(port >= 0)
 
   def transactor[F[_]: Async]: Resource[F, HikariTransactor[F]] = for {
     hikariConfig <- Resource.pure {
       val config = new HikariConfig();
 
       config.setDriverClassName("com.mysql.cj.jdbc.Driver")
-      config.setJdbcUrl(s"jdbc:mysql://${url}/to_do")
+      config.setJdbcUrl(s"jdbc:mysql://$host:$port/to_do")
       config.setUsername(user)
       config.setPassword(password)
 
@@ -33,7 +35,8 @@ object DatabaseConnectionPool {
     val config = ConfigFactory.load()
 
     DatabaseConnectionPool(
-      config.getString("db.url"),
+      config.getString("db.host"),
+      config.getInt("db.port").toShort,
       config.getString("db.user"),
       config.getString("db.password")
     )
