@@ -11,36 +11,38 @@ import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, deco
 import com.example.todoapp.Schemas.*
 import com.example.domain.CategoryId
 import com.example.domain.TodoState
-import com.example.domain.TodoId
 import com.example.domain.CategorySlug
 import com.example.domain.CategoryName
 import com.example.domain.CategoryColor
 import com.example.domain.Category
+import com.example.domain.Id
+import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
 
 object Requests {
   case class CreateTodoRequestSchema(
     title:      Title,
     body:       Body,
-    categoryId: Option[CategoryId],
+    categoryId: Option[NumberedCategoryId],
   ) derives Encoder, Decoder, Schema
 
   object CreateTodoRequestSchema {
     extension (schema: CreateTodoRequestSchema) {
-      def toTodo: Todo = Todo(schema.categoryId, schema.title, schema.body)
+      def toTodo: Todo[Id.NotNumbered.type] = Todo(schema.categoryId, schema.title, schema.body)
     }
   }
 
   case class PutTodoRequestSchema(
     title:      Title,
     body:       Body,
-    categoryId: Option[CategoryId],
+    categoryId: Option[NumberedCategoryId],
     state:      TodoState
   ) derives Encoder, Decoder, Schema
 
   object PutTodoRequestSchema {
     extension (schema: PutTodoRequestSchema) {
-      def toTodo(todoId: TodoId): Todo = Todo(
-        Some(todoId),
+      def toTodo(todoId: NumberedTodoId): Todo[Id.Numbered] = Todo(
+        todoId,
         schema.categoryId,
         schema.title,
         schema.body,
@@ -57,7 +59,7 @@ object Requests {
 
   object CreateCategoryRequestSchema {
     extension (schema: CreateCategoryRequestSchema) {
-      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
+      def toCategory: Category[Id.NotNumbered.type] = Category(schema.name, schema.slug, schema.color)
     }
   }
 
@@ -69,7 +71,7 @@ object Requests {
 
   object PutCategoryRequestSchema {
     extension (schema: PutCategoryRequestSchema) {
-      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
+      def toCategory(id: NumberedCategoryId): Category[Id.Numbered] = Category(id, schema.name, schema.slug, schema.color)
     }
   }
 }
