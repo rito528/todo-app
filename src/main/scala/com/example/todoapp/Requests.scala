@@ -11,11 +11,12 @@ import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, deco
 import com.example.todoapp.Schemas.*
 import com.example.domain.CategoryId
 import com.example.domain.TodoState
-import com.example.domain.TodoId
 import com.example.domain.CategorySlug
 import com.example.domain.CategoryName
 import com.example.domain.CategoryColor
 import com.example.domain.Category
+import com.example.domain.Id
+import com.example.domain.NumberedTodoId
 
 object Requests {
   case class CreateTodoRequestSchema(
@@ -26,7 +27,7 @@ object Requests {
 
   object CreateTodoRequestSchema {
     extension (schema: CreateTodoRequestSchema) {
-      def toTodo: Todo = Todo(schema.categoryId, schema.title, schema.body)
+      def toTodo: Todo[Id.NotNumbered.type] = Todo(schema.categoryId, schema.title, schema.body)
     }
   }
 
@@ -39,8 +40,8 @@ object Requests {
 
   object PutTodoRequestSchema {
     extension (schema: PutTodoRequestSchema) {
-      def toTodo(todoId: TodoId): Todo = Todo(
-        Some(todoId),
+      def toTodo(todoId: NumberedTodoId): Todo[Id.Numbered] = Todo(
+        todoId,
         schema.categoryId,
         schema.title,
         schema.body,
