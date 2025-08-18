@@ -89,7 +89,7 @@ class ApiEndpoints(
     }
 
     def deleteCategoryLogic: (Int) => IO[Either[Unit, Unit]] = (categoryId) => {
-      categoryRepository.deleteCategory(CategoryId(categoryId)).map(_ => Right(()))
+      categoryRepository.deleteCategory(CategoryId(categoryId)).map(Right.apply)
     }
   }
 
