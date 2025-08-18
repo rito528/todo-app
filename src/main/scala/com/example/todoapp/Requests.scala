@@ -17,12 +17,13 @@ import com.example.domain.CategoryColor
 import com.example.domain.Category
 import com.example.domain.Id
 import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
 
 object Requests {
   case class CreateTodoRequestSchema(
     title:      Title,
     body:       Body,
-    categoryId: Option[CategoryId],
+    categoryId: Option[NumberedCategoryId],
   ) derives Encoder, Decoder, Schema
 
   object CreateTodoRequestSchema {
@@ -34,7 +35,7 @@ object Requests {
   case class PutTodoRequestSchema(
     title:      Title,
     body:       Body,
-    categoryId: Option[CategoryId],
+    categoryId: Option[NumberedCategoryId],
     state:      TodoState
   ) derives Encoder, Decoder, Schema
 
@@ -58,7 +59,7 @@ object Requests {
 
   object CreateCategoryRequestSchema {
     extension (schema: CreateCategoryRequestSchema) {
-      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
+      def toCategory: Category[Id.NotNumbered.type] = Category(schema.name, schema.slug, schema.color)
     }
   }
 
@@ -70,7 +71,7 @@ object Requests {
 
   object PutCategoryRequestSchema {
     extension (schema: PutCategoryRequestSchema) {
-      def toCategory: Category = Category(schema.name, schema.slug, schema.color)
+      def toCategory(id: NumberedCategoryId): Category[Id.Numbered] = Category(id, schema.name, schema.slug, schema.color)
     }
   }
 }

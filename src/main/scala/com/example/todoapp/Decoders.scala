@@ -13,6 +13,8 @@ import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.Category
 import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
+import com.example.domain.Id
 
 object Decoders {
   given decodeTodoId: Decoder[NumberedTodoId] = Decoder[Int].map(TodoId.apply)
@@ -26,12 +28,12 @@ object Decoders {
     }
   }
 
-  given decodeCategoryId: Decoder[CategoryId]       = Decoder[Int].map(CategoryId.apply)
-  given decodeCategoryName: Decoder[CategoryName]   = Decoder[String].map(CategoryName.apply)
-  given decodeCategorySlug: Decoder[CategorySlug]   = Decoder[String].map(CategorySlug.apply)
-  given decodeCategoryColor: Decoder[CategoryColor] = Decoder[String].map(CategoryColor.apply)
-  given decodeCategory: Decoder[Category]           = Decoder.derived
+  given decodeCategoryId: Decoder[NumberedCategoryId]  = Decoder[Int].map(CategoryId.apply)
+  given decodeCategoryName: Decoder[CategoryName]      = Decoder[String].map(CategoryName.apply)
+  given decodeCategorySlug: Decoder[CategorySlug]      = Decoder[String].map(CategorySlug.apply)
+  given decodeCategoryColor: Decoder[CategoryColor]    = Decoder[String].map(CategoryColor.apply)
+  given decodeCategory: Decoder[Category[Id.Numbered]] = Decoder.derived
 
-  given decodeTodoResponses: Decoder[List[TodoResponse]] = Decoder.decodeList[TodoResponse]
-  given decodeCategories: Decoder[List[Category]]        = Decoder.decodeList[Category]
+  given decodeTodoResponses: Decoder[List[TodoResponse]]       = Decoder.decodeList[TodoResponse]
+  given decodeCategories: Decoder[List[Category[Id.Numbered]]] = Decoder.decodeList[Category[Id.Numbered]]
 }

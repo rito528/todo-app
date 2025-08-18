@@ -13,6 +13,8 @@ import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.Category
 import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
+import com.example.domain.Id
 
 object Encoders {
   // NOTE: Opaque type の Encoder は明示的に実装する必要がある
@@ -23,12 +25,12 @@ object Encoders {
   given encodeBody: Encoder[Body]             = Encoder[String].contramap(_.unwrap)
   given encodeState: Encoder[TodoState]       = Encoder[String].contramap(_.toString)
 
-  given encodeCategoryId: Encoder[CategoryId]       = Encoder[Int].contramap(_.unwrap)
-  given encodeCategoryName: Encoder[CategoryName]   = Encoder[String].contramap(_.unwrap)
-  given encodeCategorySlug: Encoder[CategorySlug]   = Encoder[String].contramap(_.unwrap)
-  given encodeCategoryColor: Encoder[CategoryColor] = Encoder[String].contramap(_.unwrap)
-  given encodeCategory: Encoder[Category]           = Encoder.derived
+  given encodeCategoryId: Encoder[NumberedCategoryId]  = Encoder[Int].contramap(_.unwrap)
+  given encodeCategoryName: Encoder[CategoryName]      = Encoder[String].contramap(_.unwrap)
+  given encodeCategorySlug: Encoder[CategorySlug]      = Encoder[String].contramap(_.unwrap)
+  given encodeCategoryColor: Encoder[CategoryColor]    = Encoder[String].contramap(_.unwrap)
+  given encodeCategory: Encoder[Category[Id.Numbered]] = Encoder.derived
 
-  given encodeTodoResponses: Encoder[List[TodoResponse]] = Encoder.encodeList[TodoResponse]
-  given encodeCategories: Encoder[List[Category]]        = Encoder.encodeList[Category]
+  given encodeTodoResponses: Encoder[List[TodoResponse]]       = Encoder.encodeList[TodoResponse]
+  given encodeCategories: Encoder[List[Category[Id.Numbered]]] = Encoder.encodeList[Category[Id.Numbered]]
 }

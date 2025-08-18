@@ -50,14 +50,14 @@ object TodoState {
 
 final case class Todo[I <: Id](
   id:         TodoId[I],
-  categoryId: Option[CategoryId],
+  categoryId: Option[NumberedCategoryId],
   title:      Title,
   body:       Body,
   state:      TodoState,
 )
 
 object Todo {
-  def apply(categoryId: Option[CategoryId], title: Title, body: Body): Todo[Id.NotNumbered.type] = {
+  def apply(categoryId: Option[NumberedCategoryId], title: Title, body: Body): Todo[Id.NotNumbered.type] = {
     Todo(
       id         = TodoId.None,
       categoryId = categoryId,

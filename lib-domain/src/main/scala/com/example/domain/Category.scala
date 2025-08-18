@@ -1,15 +1,21 @@
 package com.example.domain
 
-opaque type CategoryId = Int
+opaque type CategoryId[V <: Id] = Id
+
+type NumberedCategoryId    = CategoryId[Id.Numbered]
+type NotNumberedCategoryId = CategoryId[Id.NotNumbered.type]
 
 object CategoryId    {
-  def apply(value: Int): CategoryId = {
+  val None: NotNumberedCategoryId = Id.NotNumbered
+
+  def apply(value: Int): NumberedCategoryId = {
     require(value >= 0)
-    value
+
+    Id(value)
   }
 
-  extension (value: CategoryId) {
-    def unwrap: Int = value
+  extension (id: CategoryId[Id.Numbered]) {
+    def unwrap: Int = id.value.get
   }
 }
 
@@ -60,15 +66,15 @@ object CategoryColor {
   }
 }
 
-final case class Category(
-  id:    Option[CategoryId],
+final case class Category[I <: Id](
+  id:    CategoryId[I],
   name:  CategoryName,
   slug:  CategorySlug,
   color: CategoryColor
 )
 
 object Category {
-  def apply(name: CategoryName, slug: CategorySlug, color: CategoryColor): Category = {
-    Category(None, name, slug, color)
+  def apply(name: CategoryName, slug: CategorySlug, color: CategoryColor): Category[Id.NotNumbered.type] = {
+    Category(CategoryId.None, name, slug, color)
   }
 }
