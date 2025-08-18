@@ -1,6 +1,6 @@
 package com.example.domain
 
-opaque type CategoryId[V <: Id] = Id
+opaque type CategoryId[I <: Id] = Id
 
 type NumberedCategoryId    = CategoryId[Id.Numbered]
 type NotNumberedCategoryId = CategoryId[Id.NotNumbered.type]

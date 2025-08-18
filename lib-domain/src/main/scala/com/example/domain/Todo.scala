@@ -1,6 +1,6 @@
 package com.example.domain
 
-opaque type TodoId[V <: Id] = Id
+opaque type TodoId[I <: Id] = Id
 
 type NumberedTodoId    = TodoId[Id.Numbered]
 type NotNumberedTodoId = TodoId[Id.NotNumbered.type]
