@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { Category, Todo } from "../../../types";
 import { HttpClient } from "@angular/common/http";
@@ -34,27 +34,36 @@ export class CreateTodoForm {
   createTodoEventEmitter: EventEmitter<Todo> = new EventEmitter()
 
   createTodoForm = new FormGroup({
-    title: new FormControl(''),
-    body: new FormControl(''),
+    title: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+      Validators.maxLength(255)
+    ]),
+    body: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1)
+    ]),
     category: new FormControl<undefined | number>(undefined)
   })
 
   onCreateTodo() {
-    this.http.post<Todo>('/api/todos', {
-      title: this.createTodoForm.controls.title.value,
-      body: this.createTodoForm.controls.body.value,
-      categoryId: this.createTodoForm.controls.category.value
-    }).subscribe({
-      next: (todo) => {
-        this.todos = [...this.todos, todo]
-        this.createTodoEventEmitter.emit(todo)
-        this.createTodoForm.reset({
-          title: '',
-          body: '',
-          category: undefined
-        })
-      },
-      error: (err) => console.error(err)
-    })
+    if (this.createTodoForm.valid) {
+      this.http.post<Todo>('/api/todos', {
+        title: this.createTodoForm.controls.title.value,
+        body: this.createTodoForm.controls.body.value,
+        categoryId: this.createTodoForm.controls.category.value
+      }).subscribe({
+        next: (todo) => {
+          this.todos = [...this.todos, todo]
+          this.createTodoEventEmitter.emit(todo)
+          this.createTodoForm.reset({
+            title: '',
+            body: '',
+            category: undefined
+          })
+        },
+        error: (err) => console.error(err)
+      })
+    }
   }
 }
