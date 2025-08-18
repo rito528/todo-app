@@ -8,11 +8,11 @@ import cats.effect.kernel.Async
 
 case class DatabaseConnectionPool(
   host:     String,
-  port:     Short,
+  port:     Int,
   user:     String,
   password: String
 ) {
-  require(port >= 0)
+  require(port >= 0 && port <= 65535)
 
   def transactor[F[_]: Async]: Resource[F, HikariTransactor[F]] = for {
     hikariConfig <- Resource.pure {
@@ -36,7 +36,7 @@ object DatabaseConnectionPool {
 
     DatabaseConnectionPool(
       config.getString("db.host"),
-      config.getInt("db.port").toShort,
+      config.getInt("db.port"),
       config.getString("db.user"),
       config.getString("db.password")
     )
