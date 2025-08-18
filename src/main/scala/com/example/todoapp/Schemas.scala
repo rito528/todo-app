@@ -10,6 +10,8 @@ import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
 import com.example.domain.Category
 import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
+import com.example.domain.Id
 
 object Schemas {
   // Schema を実装するには given ではなく implicit def を用いる必要がある
@@ -20,9 +22,9 @@ object Schemas {
   implicit def bodySchema: Schema[Body]             = Schema.string[Body]
   implicit def todoStateSchema: Schema[TodoState]   = Schema.string[TodoState]
 
-  implicit def categoryIdSchema: Schema[CategoryId]       = Schema.schemaForInt.as[CategoryId]
-  implicit def categoryNameSchema: Schema[CategoryName]   = Schema.string[CategoryName]
-  implicit def categorySlugSchema: Schema[CategorySlug]   = Schema.string[CategorySlug]
-  implicit def categoryColorSchema: Schema[CategoryColor] = Schema.string[CategoryColor]
-  implicit def categorySchema: Schema[Category]           = Schema.derived
+  implicit def categoryIdSchema: Schema[NumberedCategoryId]  = Schema.schemaForInt.as[NumberedCategoryId]
+  implicit def categoryNameSchema: Schema[CategoryName]      = Schema.string[CategoryName]
+  implicit def categorySlugSchema: Schema[CategorySlug]      = Schema.string[CategorySlug]
+  implicit def categoryColorSchema: Schema[CategoryColor]    = Schema.string[CategoryColor]
+  implicit def categorySchema: Schema[Category[Id.Numbered]] = Schema.derived
 }

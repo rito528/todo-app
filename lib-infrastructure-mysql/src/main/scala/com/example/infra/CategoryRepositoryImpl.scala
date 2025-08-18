@@ -10,16 +10,18 @@ import com.example.domain.CategoryName
 import com.example.domain.CategoryId
 import com.example.domain.CategoryColor
 import cats.implicits.*
+import com.example.domain.Id
+import com.example.domain.NumberedCategoryId
 
 class CategoryRepositoryImpl[F[_]: Async](
   using pool: DatabaseConnectionPool
 ) extends CategoryRepository[F] {
 
-  override def fetchAllCategory: F[Vector[Category]] = pool.transactor.use { xa =>
-    given categoryRead: Read[Category] = Read[(Int, String, String, String)]
+  override def fetchAllCategory: F[Vector[Category[Id.Numbered]]] = pool.transactor.use { xa =>
+    given categoryRead: Read[Category[Id.Numbered]] = Read[(Int, String, String, String)]
       .map { case (id, name, slug, color) =>
         Category(
-          Some(CategoryId(id)),
+          CategoryId(id),
           CategoryName(name),
           CategorySlug(slug),
           CategoryColor(color)
@@ -27,12 +29,12 @@ class CategoryRepositoryImpl[F[_]: Async](
       };
 
     sql"SELECT id, name, slug, color FROM category"
-      .query[Category]
+      .query[Category[Id.Numbered]]
       .to[Vector]
       .transact(xa)
   }
 
-  override def createCategory(category: Category): F[CategoryId] = pool.transactor.use { xa =>
+  override def createCategory(category: Category[Id.NotNumbered.type]): F[NumberedCategoryId] = pool.transactor.use { xa =>
     (for {
       _  <- sql"""
       | INSERT INTO category (name, slug, color) 
@@ -45,13 +47,13 @@ class CategoryRepositoryImpl[F[_]: Async](
       .transact(xa)
   }
 
-  override def updateCategory(categoryId: CategoryId, category: Category): F[Unit] = pool.transactor.use { xa =>
+  override def updateCategory(category: Category[Id.Numbered]): F[Unit] = pool.transactor.use { xa =>
     sql"""
     | UPDATE category SET
     | name = ${category.name.unwrap},
     | slug = ${category.slug.unwrap},
     | color = ${category.color.unwrap}
-    | WHERE id = ${categoryId.unwrap}"""
+    | WHERE id = ${category.id.unwrap}"""
       .stripMargin
       .update
       .run
@@ -59,7 +61,7 @@ class CategoryRepositoryImpl[F[_]: Async](
       .void
   }
 
-  override def deleteCategory(categoryId: CategoryId): F[Unit] = pool.transactor.use { xa =>
+  override def deleteCategory(categoryId: NumberedCategoryId): F[Unit] = pool.transactor.use { xa =>
     (for {
       _ <- sql"DELETE FROM category WHERE id = ${categoryId.unwrap}"
         .update

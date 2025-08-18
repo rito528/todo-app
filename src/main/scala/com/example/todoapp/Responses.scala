@@ -18,7 +18,7 @@ import com.example.domain.NumberedTodoId
 object Responses {
   case class TodoResponse(
     id:       NumberedTodoId,
-    category: Option[Category],
+    category: Option[Category[Id.Numbered]],
     title:    Title,
     body:     Body,
     state:    TodoState
@@ -26,8 +26,8 @@ object Responses {
 
   object TodoResponse {
 
-    def fromTodoWithCategoryOpt(todo: Todo[Id.Numbered], category: Option[Category]): TodoResponse = {
-      require(todo.categoryId == category.flatMap(_.id))
+    def fromTodoWithCategoryOpt(todo: Todo[Id.Numbered], category: Option[Category[Id.Numbered]]): TodoResponse = {
+      require(todo.categoryId.map(_.unwrap) == category.map(_.id.unwrap))
 
       TodoResponse(
         todo.id,
