@@ -42,15 +42,15 @@ export class App {
     })
   }
 
-  createTodoEvent(todo: Todo) {
+  createTodo(todo: Todo) {
     this.todos = [...this.todos, todo] 
   }
 
-  createCategoryEvent(category: Category) {
+  createCategory(category: Category) {
     this.categories = [...this.categories, category]
   }
 
-  editCategoriesEventEmitter(categories: Category[]) {
+  putCategories(categories: Category[]) {
     this.categories = categories
     this.todos = this.todos.map(todo => {
       const category = this.categories.find(category => category.id === todo.category?.id)
