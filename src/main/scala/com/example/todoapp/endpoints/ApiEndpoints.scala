@@ -32,7 +32,10 @@ class ApiEndpoints(
         categories <- categoryRepository.fetchAllCategory
       } yield {
         Right(todos.map(todo =>
-          TodoResponse.fromTodoWithCategoryOpt(todo, categories.find(_.id == todo.categoryId))
+          TodoResponse.fromTodoWithCategoryOpt(
+            todo,
+            categories.find(category => Some(category.id) == todo.categoryId)
+          )
         ).toList)
       }
 
