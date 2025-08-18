@@ -2,12 +2,12 @@
   <div class="content">
     <mat-tab-group>
       <mat-tab label="Todo">
-        <create-todo-form [todos]="todos" [categories]="categories" (createTodoEventEmitter)="createTodoEvent($event)" />
+        <create-todo-form [todos]="todos" [categories]="categories" (createTodoEventEmitter)="createTodo($event)" />
         <todo-table [todos]="todos" [categories]="categories" />
       </mat-tab>
       <mat-tab label="カテゴリ">
-        <create-category-form (createCategoryEventEmitter)="createCategoryEvent($event)" />
-        <category-table [categories]="categories" (editCategoriesEventEmitter)="editCategoriesEventEmitter($event)" />
+        <create-category-form (createCategoryEventEmitter)="createCategory($event)" />
+        <category-table [categories]="categories" (editCategoriesEventEmitter)="putCategories($event)" />
       </mat-tab>
     </mat-tab-group>
   </div>
