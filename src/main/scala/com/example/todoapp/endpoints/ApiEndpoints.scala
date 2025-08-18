@@ -67,7 +67,7 @@ class ApiEndpoints(
     }
 
     def deleteTodoLogic: (Int) => IO[Either[Unit, Unit]] = (todoId) => {
-      todoRepository.deleteTodo(TodoId(todoId)).map(_ => Right(()))
+      todoRepository.deleteTodo(TodoId(todoId)).map(Right.apply)
     }
   }
 
