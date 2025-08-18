@@ -25,13 +25,17 @@ export class CreateCategoryForm {
 
   createCategoryForm = new FormGroup({
     name: new FormControl('', [
+      Validators.required,
       Validators.minLength(1),
       Validators.maxLength(32)
     ]),
     slug: new FormControl('', [
+      Validators.required,
       Validators.pattern('^[0-9A-Za-z]+$')
     ]),
-    color: new FormControl('#000000'),
+    color: new FormControl('#000000',
+      Validators.required
+    ),
   })
 
   onCreateCategory() {
