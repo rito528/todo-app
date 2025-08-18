@@ -12,12 +12,13 @@ import com.example.domain.CategorySlug
 import com.example.domain.CategoryColor
 import com.example.todoapp.Responses.TodoResponse
 import com.example.domain.Category
+import com.example.domain.NumberedTodoId
 
 object Decoders {
-  given decodeTodoId: Decoder[TodoId]   = Decoder[Int].map(TodoId.apply)
-  given decodeTitle: Decoder[Title]     = Decoder[String].map(Title.apply)
-  given decodeBody: Decoder[Body]       = Decoder[String].map(Body.apply)
-  given decodeState: Decoder[TodoState] = Decoder[String].map { state =>
+  given decodeTodoId: Decoder[NumberedTodoId] = Decoder[Int].map(TodoId.apply)
+  given decodeTitle: Decoder[Title]           = Decoder[String].map(Title.apply)
+  given decodeBody: Decoder[Body]             = Decoder[String].map(Body.apply)
+  given decodeState: Decoder[TodoState]       = Decoder[String].map { state =>
     state match {
       case "Progressing" => TodoState.Progressing
       case "Done"        => TodoState.Done

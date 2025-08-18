@@ -41,7 +41,7 @@ class ApiEndpoints(
         categories    <- categoryRepository.fetchAllCategory
       } yield {
         Right(
-          TodoResponse.fromTodoWithCategoryOpt(schema.toTodo.copy(id = Some(createdTodoId)), categories.find(_.id == schema.categoryId))
+          TodoResponse.fromTodoWithCategoryOpt(schema.toTodo.copy(id = createdTodoId), categories.find(_.id == schema.categoryId))
         )
       }
     }
@@ -53,14 +53,10 @@ class ApiEndpoints(
     }
 
     def putTodoLogic: ((Int, PutTodoRequestSchema)) => IO[Either[Unit, TodoResponse]] = (todoIdWithRequestSchema: (Int, PutTodoRequestSchema)) => {
-      val todoId      = TodoId(todoIdWithRequestSchema._1)
-      val updatedTodo = todoIdWithRequestSchema._2.toTodo(todoId)
+      val updatedTodo = todoIdWithRequestSchema._2.toTodo(TodoId(todoIdWithRequestSchema._1))
 
       for {
-        _          <- todoRepository.updateTodo(
-          todoId,
-          updatedTodo
-        )
+        _          <- todoRepository.updateTodo(updatedTodo)
         categories <- categoryRepository.fetchAllCategory
       } yield {
         Right(

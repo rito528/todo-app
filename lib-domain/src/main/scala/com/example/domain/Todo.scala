@@ -1,15 +1,17 @@
 package com.example.domain
 
-opaque type TodoId = Int
+opaque type TodoId[V <: Id] = Id
+
+type NumberedTodoId    = TodoId[Id.Numbered]
+type NotNumberedTodoId = TodoId[Id.NotNumbered.type]
 
 object TodoId {
-  def apply(value: Int): TodoId = {
-    require(value >= 0)
-    value
-  }
+  val None: NotNumberedTodoId = Id.NotNumbered
 
-  extension (value: TodoId) {
-    def unwrap: Int = value
+  def apply(value: Int): NumberedTodoId = Id.apply(value)
+
+  extension (id: NumberedTodoId) {
+    def unwrap: Int = id.value.get
   }
 }
 
@@ -46,8 +48,8 @@ object TodoState {
   val initial = Todo
 }
 
-final case class Todo(
-  id:         Option[TodoId],
+final case class Todo[I <: Id](
+  id:         TodoId[I],
   categoryId: Option[CategoryId],
   title:      Title,
   body:       Body,
@@ -55,9 +57,9 @@ final case class Todo(
 )
 
 object Todo {
-  def apply(categoryId: Option[CategoryId], title: Title, body: Body): Todo = {
+  def apply(categoryId: Option[CategoryId], title: Title, body: Body): Todo[Id.NotNumbered.type] = {
     Todo(
-      id         = None,
+      id         = TodoId.None,
       categoryId = categoryId,
       title      = title,
       body       = body,
