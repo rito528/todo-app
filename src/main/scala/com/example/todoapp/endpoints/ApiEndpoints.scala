@@ -59,8 +59,9 @@ class ApiEndpoints(
       }
     }
 
-    def putTodoLogic: ((Int, PutTodoRequestSchema)) => IO[Either[Unit, TodoResponse]] = (todoIdWithRequestSchema: (Int, PutTodoRequestSchema)) => {
-      val updatedTodo = todoIdWithRequestSchema._2.toTodo(TodoId(todoIdWithRequestSchema._1))
+    def putTodoLogic(todoIdFromPath: Int, schema: PutTodoRequestSchema): IO[Either[Unit, TodoResponse]] = {
+      val todoId      = TodoId(todoIdFromPath)
+      val updatedTodo = schema.toTodo(todoId)
 
       for {
         _          <- todoRepository.updateTodo(updatedTodo)
@@ -75,27 +76,27 @@ class ApiEndpoints(
       }
     }
 
-    def deleteTodoLogic: (Int) => IO[Either[Unit, Unit]] = (todoId) => {
-      todoRepository.deleteTodo(TodoId(todoId)).map(_ => Right(()))
+    def deleteTodoLogic(todoIdFromPath: Int): IO[Either[Unit, Unit]] = {
+      todoRepository.deleteTodo(TodoId(todoIdFromPath)).map(Right.apply)
     }
 
-    def createCategoryLogic: CreateCategoryRequestSchema => IO[Either[Unit, Category[Id.Numbered]]] = (schema: CreateCategoryRequestSchema) => {
+    def createCategoryLogic(schema: CreateCategoryRequestSchema): IO[Either[Unit, Category[Id.Numbered]]] = {
       for {
         categoryId <- categoryRepository.createCategory(schema.toCategory)
       } yield Right(schema.toCategory.copy(id = categoryId))
     }
 
-    def putCategoryLogic: ((Int, PutCategoryRequestSchema)) => IO[Either[Unit, Category[Id.Numbered]]] = (categoryIdWithPutSchema: (Int, PutCategoryRequestSchema)) => {
-      val categoryId = CategoryId(categoryIdWithPutSchema._1)
-      val category   = categoryIdWithPutSchema._2.toCategory(categoryId)
+    def putCategoryLogic(categoryIdFromPath: Int, schema: PutCategoryRequestSchema): IO[Either[Unit, Category[Id.Numbered]]] = {
+      val categoryId = CategoryId(categoryIdFromPath)
+      val category   = schema.toCategory(categoryId)
 
       for {
         _ <- categoryRepository.updateCategory(category)
       } yield Right(category)
     }
 
-    def deleteCategoryLogic: (Int) => IO[Either[Unit, Unit]] = (categoryId) => {
-      categoryRepository.deleteCategory(CategoryId(categoryId)).map(Right.apply)
+    def deleteCategoryLogic(categoryIdFromPath: Int): IO[Either[Unit, Unit]] = {
+      categoryRepository.deleteCategory(CategoryId(categoryIdFromPath)).map(Right.apply)
     }
   }
 
