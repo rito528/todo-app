@@ -8,18 +8,25 @@ import cats.effect.kernel.Async
 
 case class DatabaseConnectionPool(
   host:     String,
-  port:     Short,
+  port:     Int,
   user:     String,
   password: String
 ) {
-  require(port >= 0)
+  require(port >= 0 && port <= 65535)
 
   def transactor[F[_]: Async]: Resource[F, HikariTransactor[F]] = for {
     hikariConfig <- Resource.pure {
       val config = new HikariConfig();
 
-      config.setDriverClassName("com.mysql.cj.jdbc.Driver")
-      config.setJdbcUrl(s"jdbc:mysql://$host:$port/to_do")
+      val jdbcUrl =
+        if (host == "localhost") {
+          s"jdbc:aws-wrapper:mysql://$host:$port/to_do?allowPublicKeyRetrieval=true&useSSL=false&wrapperPlugins="
+        } else {
+          s"jdbc:aws-wrapper:mysql://$host:$port/to_do"
+        }
+
+      config.setDriverClassName("software.amazon.jdbc.Driver")
+      config.setJdbcUrl(jdbcUrl)
       config.setUsername(user)
       config.setPassword(password)
 
@@ -36,7 +43,7 @@ object DatabaseConnectionPool {
 
     DatabaseConnectionPool(
       config.getString("db.host"),
-      config.getInt("db.port").toShort,
+      config.getInt("db.port"),
       config.getString("db.user"),
       config.getString("db.password")
     )
