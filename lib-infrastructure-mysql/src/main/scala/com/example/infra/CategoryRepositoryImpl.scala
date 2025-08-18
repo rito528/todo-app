@@ -70,7 +70,6 @@ class CategoryRepositoryImpl[F[_]: Async](
     } yield ())
       .transact(xa)
       .void
-
   }
 
 }
