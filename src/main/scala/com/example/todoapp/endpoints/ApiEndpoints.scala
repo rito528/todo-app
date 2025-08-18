@@ -45,7 +45,10 @@ class ApiEndpoints(
         categories    <- categoryRepository.fetchAllCategory
       } yield {
         Right(
-          TodoResponse.fromTodoWithCategoryOpt(schema.toTodo.copy(id = createdTodoId), categories.find(_.id == schema.categoryId))
+          TodoResponse.fromTodoWithCategoryOpt(
+            schema.toTodo.copy(id = createdTodoId),
+            categories.find(category => Some(category.id) == schema.categoryId)
+          )
         )
       }
     }
@@ -64,7 +67,10 @@ class ApiEndpoints(
         categories <- categoryRepository.fetchAllCategory
       } yield {
         Right(
-          TodoResponse.fromTodoWithCategoryOpt(updatedTodo, categories.find(_.id == updatedTodo.categoryId))
+          TodoResponse.fromTodoWithCategoryOpt(
+            updatedTodo,
+            categories.find(category => Some(category.id) == updatedTodo.categoryId)
+          )
         )
       }
     }
