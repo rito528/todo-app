@@ -23,7 +23,7 @@ class CategoryRepositoryImpl[F[_]: Async](
       .map { case (id, name, slug, color) =>
         Category(
           CategoryId(id.refineUnsafe),
-          CategoryName(name),
+          name.refineUnsafe[CategoryName],
           CategorySlug(slug),
           CategoryColor(color)
         )
@@ -39,7 +39,7 @@ class CategoryRepositoryImpl[F[_]: Async](
     (for {
       _  <- sql"""
       | INSERT INTO category (name, slug, color)
-      | VALUES (${category.name.unwrap}, ${category.slug.unwrap}, ${category.color.unwrap})"""
+      | VALUES (${category.name: String}, ${category.slug.unwrap}, ${category.color.unwrap})"""
         .stripMargin
         .update
         .run
@@ -51,7 +51,7 @@ class CategoryRepositoryImpl[F[_]: Async](
   override def updateCategory(category: Category[Id.Numbered]): F[Unit] = pool.transactor.use { xa =>
     sql"""
     | UPDATE category SET
-    | name = ${category.name.unwrap},
+    | name = ${category.name: String},
     | slug = ${category.slug.unwrap},
     | color = ${category.color.unwrap}
     | WHERE id = ${category.id.unwrap}"""

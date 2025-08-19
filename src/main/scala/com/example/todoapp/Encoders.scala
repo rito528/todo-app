@@ -15,6 +15,7 @@ import com.example.domain.Category
 import com.example.domain.NumberedTodoId
 import com.example.domain.NumberedCategoryId
 import com.example.domain.Id
+import io.github.iltotore.iron.circe.given
 
 object Encoders {
   // NOTE: Opaque type の Encoder は明示的に実装する必要がある
@@ -26,7 +27,6 @@ object Encoders {
   given encodeState: Encoder[TodoState]       = Encoder[String].contramap(_.toString)
 
   given encodeCategoryId: Encoder[NumberedCategoryId]  = Encoder[Int].contramap(_.unwrap)
-  given encodeCategoryName: Encoder[CategoryName]      = Encoder[String].contramap(_.unwrap)
   given encodeCategorySlug: Encoder[CategorySlug]      = Encoder[String].contramap(_.unwrap)
   given encodeCategoryColor: Encoder[CategoryColor]    = Encoder[String].contramap(_.unwrap)
   given encodeCategory: Encoder[Category[Id.Numbered]] = Encoder.derived

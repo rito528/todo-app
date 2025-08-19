@@ -1,5 +1,8 @@
 package com.example.domain
 
+import io.github.iltotore.iron.*
+import io.github.iltotore.iron.constraint.all.*
+
 opaque type CategoryId[I <: Id] = Id
 
 type NumberedCategoryId    = CategoryId[Id.Numbered]
@@ -17,22 +20,7 @@ object CategoryId    {
   }
 }
 
-opaque type CategoryName = String
-
-object CategoryName  {
-  def apply(value: String): CategoryName = {
-    require(value.length <= 32)
-
-    val regex = "\r\n|\n|\r".r
-    require(!regex.matches(value))
-
-    value
-  }
-
-  extension (value: CategoryName) {
-    def unwrap: String = value
-  }
-}
+type CategoryName = MinLength[1] & MaxLength[32] & Not[Contain["\r\n"]] & Not[Contain["\n"]] & Not[Contain["\r"]]
 
 opaque type CategorySlug = String
 
@@ -66,13 +54,13 @@ object CategoryColor {
 
 final case class Category[I <: Id](
   id:    CategoryId[I],
-  name:  CategoryName,
+  name:  String :| CategoryName,
   slug:  CategorySlug,
   color: CategoryColor
 )
 
 object Category {
-  def apply(name: CategoryName, slug: CategorySlug, color: CategoryColor): Category[Id.NotNumbered.type] = {
+  def apply(name: String :| CategoryName, slug: CategorySlug, color: CategoryColor): Category[Id.NotNumbered.type] = {
     Category(CategoryId.None, name, slug, color)
   }
 }

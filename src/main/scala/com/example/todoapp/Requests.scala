@@ -6,8 +6,8 @@ import com.example.domain.Todo
 import sttp.tapir.Schema
 import io.circe.Encoder
 import io.circe.Decoder
-import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId, encodeCategoryName, encodeCategorySlug, encodeCategoryColor }
-import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId, decodeCategoryName, decodeCategorySlug, decodeCategoryColor }
+import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId, encodeCategorySlug, encodeCategoryColor }
+import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId, decodeCategorySlug, decodeCategoryColor }
 import com.example.todoapp.Schemas.*
 import com.example.domain.CategoryId
 import com.example.domain.TodoState
@@ -18,6 +18,9 @@ import com.example.domain.Category
 import com.example.domain.Id
 import com.example.domain.NumberedTodoId
 import com.example.domain.NumberedCategoryId
+import io.github.iltotore.iron.*
+import io.github.iltotore.iron.circe.given
+import sttp.tapir.generic.auto.*
 
 object Requests {
   case class CreateTodoRequestSchema(
@@ -52,7 +55,7 @@ object Requests {
   }
 
   case class CreateCategoryRequestSchema(
-    name:  CategoryName,
+    name:  String :| CategoryName,
     slug:  CategorySlug,
     color: CategoryColor
   ) derives Encoder, Decoder, Schema
@@ -64,7 +67,7 @@ object Requests {
   }
 
   case class PutCategoryRequestSchema(
-    name:  CategoryName,
+    name:  String :| CategoryName,
     slug:  CategorySlug,
     color: CategoryColor
   ) derives Encoder, Decoder, Schema
