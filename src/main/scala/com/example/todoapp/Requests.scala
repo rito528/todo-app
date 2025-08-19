@@ -6,8 +6,8 @@ import com.example.domain.Todo
 import sttp.tapir.Schema
 import io.circe.Encoder
 import io.circe.Decoder
-import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId, encodeCategoryColor }
-import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId, decodeCategoryColor }
+import com.example.todoapp.Encoders.{ encodeTitle, encodeBody, encodeState, encodeCategoryId }
+import com.example.todoapp.Decoders.{ decodeTitle, decodeBody, decodeState, decodeCategoryId }
 import com.example.todoapp.Schemas.*
 import com.example.domain.CategoryId
 import com.example.domain.TodoState
@@ -57,7 +57,7 @@ object Requests {
   case class CreateCategoryRequestSchema(
     name:  String :| CategoryName,
     slug:  String :| CategorySlug,
-    color: CategoryColor
+    color: String :| CategoryColor
   ) derives Encoder, Decoder, Schema
 
   object CreateCategoryRequestSchema {
@@ -69,7 +69,7 @@ object Requests {
   case class PutCategoryRequestSchema(
     name:  String :| CategoryName,
     slug:  String :| CategorySlug,
-    color: CategoryColor
+    color: String :| CategoryColor
   ) derives Encoder, Decoder, Schema
 
   object PutCategoryRequestSchema {

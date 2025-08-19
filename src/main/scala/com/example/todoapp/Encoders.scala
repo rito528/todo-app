@@ -27,7 +27,6 @@ object Encoders {
   given encodeState: Encoder[TodoState]       = Encoder[String].contramap(_.toString)
 
   given encodeCategoryId: Encoder[NumberedCategoryId]  = Encoder[Int].contramap(_.unwrap)
-  given encodeCategoryColor: Encoder[CategoryColor]    = Encoder[String].contramap(_.unwrap)
   given encodeCategory: Encoder[Category[Id.Numbered]] = Encoder.derived
 
   given encodeTodoResponses: Encoder[List[TodoResponse]]       = Encoder.encodeList[TodoResponse]

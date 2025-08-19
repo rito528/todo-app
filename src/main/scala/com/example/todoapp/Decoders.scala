@@ -33,7 +33,6 @@ object Decoders {
   }
 
   given decodeCategoryId: Decoder[NumberedCategoryId]  = Decoder[PositiveInt].map(CategoryId.apply)
-  given decodeCategoryColor: Decoder[CategoryColor]    = Decoder[String].map(CategoryColor.apply)
   given decodeCategory: Decoder[Category[Id.Numbered]] = Decoder.derived
 
   given decodeTodoResponses: Decoder[List[TodoResponse]]       = Decoder.decodeList[TodoResponse]
