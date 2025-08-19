@@ -20,24 +20,9 @@ object CategoryId    {
   }
 }
 
-type CategoryName = MinLength[1] & MaxLength[32] & Not[Contain["\r\n"]] & Not[Contain["\n"]] & Not[Contain["\r"]]
+type CategoryName = MinLength[1] & MaxLength[32] & Not[Match["\r\n|\n|\r"]]
 
-opaque type CategorySlug = String
-
-object CategorySlug  {
-  def apply(value: String): CategorySlug = {
-    require(value.length <= 32)
-
-    val regex = "^[0-9a-zA-Z]+$".r
-    require(regex.matches(value))
-
-    value
-  }
-
-  extension (value: CategorySlug) {
-    def unwrap: String = value
-  }
-}
+type CategorySlug = MinLength[1] & MaxLength[32] & Match["^[0-9a-zA-Z]+$"]
 
 opaque type CategoryColor = String
 
@@ -55,12 +40,12 @@ object CategoryColor {
 final case class Category[I <: Id](
   id:    CategoryId[I],
   name:  String :| CategoryName,
-  slug:  CategorySlug,
+  slug:  String :| CategorySlug,
   color: CategoryColor
 )
 
 object Category {
-  def apply(name: String :| CategoryName, slug: CategorySlug, color: CategoryColor): Category[Id.NotNumbered.type] = {
+  def apply(name: String :| CategoryName, slug: String :| CategorySlug, color: CategoryColor): Category[Id.NotNumbered.type] = {
     Category(CategoryId.None, name, slug, color)
   }
 }

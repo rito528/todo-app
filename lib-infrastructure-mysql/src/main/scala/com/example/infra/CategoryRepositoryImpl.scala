@@ -24,7 +24,7 @@ class CategoryRepositoryImpl[F[_]: Async](
         Category(
           CategoryId(id.refineUnsafe),
           name.refineUnsafe[CategoryName],
-          CategorySlug(slug),
+          slug.refineUnsafe[CategorySlug],
           CategoryColor(color)
         )
       };
@@ -39,7 +39,7 @@ class CategoryRepositoryImpl[F[_]: Async](
     (for {
       _  <- sql"""
       | INSERT INTO category (name, slug, color)
-      | VALUES (${category.name: String}, ${category.slug.unwrap}, ${category.color.unwrap})"""
+      | VALUES (${category.name: String}, ${category.slug: String}, ${category.color.unwrap})"""
         .stripMargin
         .update
         .run
@@ -52,7 +52,7 @@ class CategoryRepositoryImpl[F[_]: Async](
     sql"""
     | UPDATE category SET
     | name = ${category.name: String},
-    | slug = ${category.slug.unwrap},
+    | slug = ${category.slug: String},
     | color = ${category.color.unwrap}
     | WHERE id = ${category.id.unwrap}"""
       .stripMargin

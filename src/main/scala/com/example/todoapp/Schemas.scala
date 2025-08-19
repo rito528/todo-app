@@ -25,7 +25,7 @@ object Schemas {
 
   implicit def categoryIdSchema: Schema[NumberedCategoryId]       = Schema.schemaForInt.as[NumberedCategoryId]
   implicit def categoryNameSchema: Schema[String :| CategoryName] = Schema.string[String :| CategoryName]
-  implicit def categorySlugSchema: Schema[CategorySlug]           = Schema.string[CategorySlug]
+  implicit def categorySlugSchema: Schema[String :| CategorySlug] = Schema.string[String :| CategorySlug]
   implicit def categoryColorSchema: Schema[CategoryColor]         = Schema.string[CategoryColor]
   implicit def categorySchema: Schema[Category[Id.Numbered]]      = Schema.derived
 }
