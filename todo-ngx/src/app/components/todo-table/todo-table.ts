@@ -39,7 +39,7 @@ export class TodoTable {
           title: currentTodo.title,
           body: currentTodo.body,
           state: currentTodo.state,
-          categoryId: currentTodo.category?.id
+          categoryId: currentTodo.category?.id ?? null
         },
         categories: this.categories
       }
