@@ -9,9 +9,10 @@ import com.example.domain.CategorySlug
 import com.example.domain.CategoryName
 import com.example.domain.CategoryId
 import com.example.domain.CategoryColor
+import com.example.domain.NumberedCategoryId
 import cats.implicits.*
 import com.example.domain.Id
-import com.example.domain.NumberedCategoryId
+import io.github.iltotore.iron.*
 
 class CategoryRepositoryImpl[F[_]: Async](
   using pool: DatabaseConnectionPool
@@ -21,7 +22,7 @@ class CategoryRepositoryImpl[F[_]: Async](
     given categoryRead: Read[Category[Id.Numbered]] = Read[(Int, String, String, String)]
       .map { case (id, name, slug, color) =>
         Category(
-          CategoryId(id),
+          CategoryId(id.refineUnsafe),
           CategoryName(name),
           CategorySlug(slug),
           CategoryColor(color)
@@ -37,13 +38,13 @@ class CategoryRepositoryImpl[F[_]: Async](
   override def createCategory(category: Category[Id.NotNumbered.type]): F[NumberedCategoryId] = pool.transactor.use { xa =>
     (for {
       _  <- sql"""
-      | INSERT INTO category (name, slug, color) 
+      | INSERT INTO category (name, slug, color)
       | VALUES (${category.name.unwrap}, ${category.slug.unwrap}, ${category.color.unwrap})"""
         .stripMargin
         .update
         .run
       id <- sql"SELECT LAST_INSERT_ID()".query[Int].unique
-    } yield CategoryId(id))
+    } yield CategoryId(id.refineUnsafe))
       .transact(xa)
   }
 

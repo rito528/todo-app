@@ -8,9 +8,7 @@ type NotNumberedCategoryId = CategoryId[Id.NotNumbered.type]
 object CategoryId    {
   val None: NotNumberedCategoryId = Id.NotNumbered
 
-  def apply(value: Int): NumberedCategoryId = {
-    require(value >= 0)
-
+  def apply(value: PositiveInt): NumberedCategoryId = {
     Id(value)
   }
 

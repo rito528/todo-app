@@ -6,6 +6,7 @@ import com.example.todoapp.Responses.TodoResponse
 import com.example.todoapp.Encoders.{ encodeCategory, encodeCategories, encodeTodoResponses }
 import com.example.todoapp.Decoders.{ decodeCategory, decodeCategories, decodeTodoResponses }
 import com.example.todoapp.Schemas.*
+import com.example.todoapp.Codecs.{ numberedTodoIdCodec, numberedCategoryIdCodec }
 import com.example.domain.TodoRepository
 import com.example.domain.CategoryRepository
 import cats.effect.IO
@@ -14,11 +15,11 @@ import com.example.todoapp.Requests.CreateTodoRequestSchema
 import com.example.domain.Todo
 import com.example.domain.Category
 import com.example.todoapp.Requests.PutTodoRequestSchema
-import com.example.domain.TodoId
 import com.example.todoapp.Requests.CreateCategoryRequestSchema
 import com.example.todoapp.Requests.PutCategoryRequestSchema
-import com.example.domain.CategoryId
 import com.example.domain.Id
+import com.example.domain.NumberedTodoId
+import com.example.domain.NumberedCategoryId
 
 class ApiEndpoints(
   using
@@ -59,8 +60,7 @@ class ApiEndpoints(
       }
     }
 
-    def putTodoLogic(todoIdFromPath: Int, schema: PutTodoRequestSchema): IO[Either[Unit, TodoResponse]] = {
-      val todoId      = TodoId(todoIdFromPath)
+    def putTodoLogic(todoId: NumberedTodoId, schema: PutTodoRequestSchema): IO[Either[Unit, TodoResponse]] = {
       val updatedTodo = schema.toTodo(todoId)
 
       for {
@@ -76,8 +76,8 @@ class ApiEndpoints(
       }
     }
 
-    def deleteTodoLogic(todoIdFromPath: Int): IO[Either[Unit, Unit]] = {
-      todoRepository.deleteTodo(TodoId(todoIdFromPath)).map(Right.apply)
+    def deleteTodoLogic(todoId: NumberedTodoId): IO[Either[Unit, Unit]] = {
+      todoRepository.deleteTodo(todoId).map(Right.apply)
     }
 
     def createCategoryLogic(schema: CreateCategoryRequestSchema): IO[Either[Unit, Category[Id.Numbered]]] = {
@@ -86,17 +86,16 @@ class ApiEndpoints(
       } yield Right(schema.toCategory.copy(id = categoryId))
     }
 
-    def putCategoryLogic(categoryIdFromPath: Int, schema: PutCategoryRequestSchema): IO[Either[Unit, Category[Id.Numbered]]] = {
-      val categoryId = CategoryId(categoryIdFromPath)
-      val category   = schema.toCategory(categoryId)
+    def putCategoryLogic(categoryId: NumberedCategoryId, schema: PutCategoryRequestSchema): IO[Either[Unit, Category[Id.Numbered]]] = {
+      val category = schema.toCategory(categoryId)
 
       for {
         _ <- categoryRepository.updateCategory(category)
       } yield Right(category)
     }
 
-    def deleteCategoryLogic(categoryIdFromPath: Int): IO[Either[Unit, Unit]] = {
-      categoryRepository.deleteCategory(CategoryId(categoryIdFromPath)).map(Right.apply)
+    def deleteCategoryLogic(categoryId: NumberedCategoryId): IO[Either[Unit, Unit]] = {
+      categoryRepository.deleteCategory(categoryId).map(Right.apply)
     }
   }
 
@@ -108,12 +107,12 @@ class ApiEndpoints(
     endpoint.get.in("api" / "todos").out(jsonBody[List[TodoResponse]])
   }
 
-  private def putTodoEndpoint: PublicEndpoint[(Int, PutTodoRequestSchema), Unit, TodoResponse, Any] = {
-    endpoint.put.in("api" / "todos" / path[Int]).in(jsonBody[PutTodoRequestSchema]).out(jsonBody[TodoResponse])
+  private def putTodoEndpoint: PublicEndpoint[(NumberedTodoId, PutTodoRequestSchema), Unit, TodoResponse, Any] = {
+    endpoint.put.in("api" / "todos" / path[NumberedTodoId]).in(jsonBody[PutTodoRequestSchema]).out(jsonBody[TodoResponse])
   }
 
-  private def deleteTodoEndpoint: PublicEndpoint[Int, Unit, Unit, Any] = {
-    endpoint.delete.in("api" / "todos" / path[Int])
+  private def deleteTodoEndpoint: PublicEndpoint[NumberedTodoId, Unit, Unit, Any] = {
+    endpoint.delete.in("api" / "todos" / path[NumberedTodoId])
   }
 
   private def getAllCategoriesEndpoint: PublicEndpoint[Unit, Unit, List[Category[Id.Numbered]], Any] = {
@@ -124,12 +123,12 @@ class ApiEndpoints(
     endpoint.post.in("api" / "categories").in(jsonBody[CreateCategoryRequestSchema]).out(jsonBody[Category[Id.Numbered]])
   }
 
-  private def putCategoryEndpoint: PublicEndpoint[(Int, PutCategoryRequestSchema), Unit, Category[Id.Numbered], Any] = {
-    endpoint.put.in("api" / "categories" / path[Int]).in(jsonBody[PutCategoryRequestSchema]).out(jsonBody[Category[Id.Numbered]])
+  private def putCategoryEndpoint: PublicEndpoint[(NumberedCategoryId, PutCategoryRequestSchema), Unit, Category[Id.Numbered], Any] = {
+    endpoint.put.in("api" / "categories" / path[NumberedCategoryId]).in(jsonBody[PutCategoryRequestSchema]).out(jsonBody[Category[Id.Numbered]])
   }
 
-  private def deleteCategoryEndpoint: PublicEndpoint[Int, Unit, Unit, Any] = {
-    endpoint.delete.in("api" / "categories" / path[Int])
+  private def deleteCategoryEndpoint: PublicEndpoint[NumberedCategoryId, Unit, Unit, Any] = {
+    endpoint.delete.in("api" / "categories" / path[NumberedCategoryId])
   }
 
   val endpoints: List[ServerEndpoint[Any, IO]] = List(

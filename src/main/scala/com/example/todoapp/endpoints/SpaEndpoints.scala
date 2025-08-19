@@ -20,7 +20,7 @@ object SpaEndpoints {
   }
 
   val endpoints: List[ServerEndpoint[Any, IO]] = List(
-    angularAppEndpoint.serverLogic(SpaServerLogics.angularAppLogic),
     staticFilesGetServerEndpoint("assets")("public/"),
+    angularAppEndpoint.serverLogic(SpaServerLogics.angularAppLogic),
   )
 }

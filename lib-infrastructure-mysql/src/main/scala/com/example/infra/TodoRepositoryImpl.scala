@@ -13,6 +13,7 @@ import com.example.domain.CategoryId
 import com.example.domain.Body
 import com.example.domain.Id
 import com.example.domain.NumberedTodoId
+import io.github.iltotore.iron.*
 
 class TodoRepositoryImpl[F[_]: Async](
   using pool: DatabaseConnectionPool
@@ -28,8 +29,8 @@ class TodoRepositoryImpl[F[_]: Async](
         }
 
         Todo(
-          TodoId(id),
-          categoryId.map(CategoryId.apply),
+          TodoId(id.refineUnsafe),
+          categoryId.map(id => CategoryId(id.refineUnsafe)),
           Title(title),
           Body(body),
           todoState
@@ -53,24 +54,24 @@ class TodoRepositoryImpl[F[_]: Async](
   override def createTodo(todo: Todo[Id.NotNumbered.type]): F[NumberedTodoId] = pool.transactor.use { xa =>
     (for {
       _  <- sql"""
-        | INSERT INTO to_do (category_id, title, body, state) 
+        | INSERT INTO to_do (category_id, title, body, state)
         | VALUES (${todo.categoryId.map(_.unwrap)}, ${todo.title.unwrap}, ${todo.body.unwrap}, ${todoStateToInt(todo.state)})"""
         .stripMargin
         .update
         .run
       id <- sql"SELECT LAST_INSERT_ID()".query[Int].unique
-    } yield TodoId(id))
+    } yield TodoId(id.refineUnsafe))
       .transact(xa)
   }
 
   override def updateTodo(todo: Todo[Id.Numbered]): F[Unit] = pool.transactor.use { xa =>
     sql"""
-      | UPDATE to_do SET 
+      | UPDATE to_do SET
       | category_id = ${todo.categoryId.map(_.unwrap)},
       | title = ${todo.title.unwrap},
       | body = ${todo.body.unwrap},
       | state = ${todoStateToInt(todo.state)}
-      | WHERE id = ${todo.id.unwrap}"""
+      | WHERE id = ${todo.id.unwrap: Int}"""
       .stripMargin
       .update
       .run
@@ -79,7 +80,7 @@ class TodoRepositoryImpl[F[_]: Async](
   }
 
   override def deleteTodo(todoId: NumberedTodoId): F[Unit] = pool.transactor.use { xa =>
-    sql"DELETE FROM to_do WHERE id = ${todoId.unwrap}"
+    sql"DELETE FROM to_do WHERE id = ${todoId.unwrap: Int}"
       .update
       .run
       .transact(xa)

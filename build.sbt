@@ -9,6 +9,7 @@ val CirceVersion = "0.14.14"
 val MunitVersion = "1.1.0"
 val LogbackVersion = "1.5.16"
 val MunitCatsEffectVersion = "2.0.0"
+val IronVersion = "3.1.0"
 
 lazy val `lib-util` = (project in file("./lib-util"))
 
@@ -22,11 +23,17 @@ lazy val `lib-infrastructure-mysql` = (project in file("./lib-infrastructure-mys
       "org.tpolecat" %% "doobie-specs2"   % DoobieVersion % Test,
       "org.tpolecat" %% "doobie-hikari"   % DoobieVersion,
       "com.zaxxer" % "HikariCP" % "7.0.0",
-      "software.amazon.jdbc" % "aws-advanced-jdbc-wrapper" % "2.6.1"
+      "software.amazon.jdbc" % "aws-advanced-jdbc-wrapper" % "2.6.1",
+      "io.github.iltotore" %% "iron" % IronVersion
     )
   )
 
 lazy val `lib-domain` = (project in file("./lib-domain"))
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.github.iltotore" %% "iron" % IronVersion
+    )
+  )
 
 lazy val `todo-app` = (project in file("."))
   .aggregate(`lib-util`, `lib-infrastructure-mysql`, `lib-domain`)
@@ -39,12 +46,15 @@ lazy val `todo-app` = (project in file("."))
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-files"             % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-iron"              % TapirVersion,
       "org.http4s"                  %% "http4s-ember-server"     % Http4sVersion,
       "io.circe"                    %% "circe-generic"           % CirceVersion,
       "io.circe"                    %% "circe-literal"           % CirceVersion,
       "org.scalameta"               %% "munit"                   % MunitVersion           % Test,
       "org.typelevel"               %% "munit-cats-effect"       % MunitCatsEffectVersion % Test,
       "ch.qos.logback"              %  "logback-classic"         % LogbackVersion         % Runtime,
+      "io.github.iltotore"          %% "iron"                    % IronVersion,
+      "io.github.iltotore"          %% "iron-circe"              % IronVersion
     ),
     Compile / unmanagedSourceDirectories += baseDirectory.value / "scala",
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",

@@ -8,10 +8,10 @@ type NotNumberedTodoId = TodoId[Id.NotNumbered.type]
 object TodoId {
   val None: NotNumberedTodoId = Id.NotNumbered
 
-  def apply(value: Int): NumberedTodoId = Id.apply(value)
+  def apply(value: PositiveInt): NumberedTodoId = Id.apply(value)
 
   extension (id: NumberedTodoId) {
-    def unwrap: Int = id.value.get
+    def unwrap: PositiveInt = id.value.get
   }
 }
 

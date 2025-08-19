@@ -15,9 +15,13 @@ import com.example.domain.Category
 import com.example.domain.NumberedTodoId
 import com.example.domain.NumberedCategoryId
 import com.example.domain.Id
+import io.github.iltotore.iron.*
+import io.github.iltotore.iron.constraint.numeric.Greater
+import com.example.domain.PositiveInt
+import io.github.iltotore.iron.circe.given
 
 object Decoders {
-  given decodeTodoId: Decoder[NumberedTodoId] = Decoder[Int].map(TodoId.apply)
+  given decodeTodoId: Decoder[NumberedTodoId] = Decoder[PositiveInt].map(TodoId.apply)
   given decodeTitle: Decoder[Title]           = Decoder[String].map(Title.apply)
   given decodeBody: Decoder[Body]             = Decoder[String].map(Body.apply)
   given decodeState: Decoder[TodoState]       = Decoder[String].map { state =>
@@ -28,7 +32,7 @@ object Decoders {
     }
   }
 
-  given decodeCategoryId: Decoder[NumberedCategoryId]  = Decoder[Int].map(CategoryId.apply)
+  given decodeCategoryId: Decoder[NumberedCategoryId]  = Decoder[PositiveInt].map(CategoryId.apply)
   given decodeCategoryName: Decoder[CategoryName]      = Decoder[String].map(CategoryName.apply)
   given decodeCategorySlug: Decoder[CategorySlug]      = Decoder[String].map(CategorySlug.apply)
   given decodeCategoryColor: Decoder[CategoryColor]    = Decoder[String].map(CategoryColor.apply)
